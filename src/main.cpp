@@ -3,6 +3,8 @@
 //
 
 #include "room.h"
+#include "item.h"
+#include "container.h"
 #include <iostream>
 using namespace std;
 
