@@ -5,6 +5,7 @@
 #include "room.h"
 #include "item.h"
 #include "container.h"
+#include "creature.h"
 #include <iostream>
 using namespace std;
 
