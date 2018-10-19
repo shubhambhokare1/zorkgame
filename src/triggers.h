@@ -12,22 +12,31 @@ using namespace std;
 
 class Triggers 
 {
+	
 	struct Condition {
-		string owner;
+		Owner owner;
 		Status status;
+		
 	};
 	struct Status {
-		
+		Status status;
+		string object;
 	};
 	
 	struct Owner {
-		
+		string object;
+		string has;
+		Owner owner;
 	};
 public:
 	vector <Condition> Cond;
 	string command;
 	string type; //single or permanent --> where does this information come from? XML?
 	void print
+
+
+
+
 }
 
 
