@@ -13,12 +13,18 @@ using namespace std;
 class item{
 
     public:
+
+        //Components of the item
         string name;
         string status;
         string description;
         string writing;
         string turn_on;
         vector <string> trigger;
+
+        //Functions related to the item
+        item();
+        virtual ~item();
 };
 
 #endif //ZORKGAME_ITEM_H
