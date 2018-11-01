@@ -29,11 +29,11 @@ int main(int argc, char * argv[]) {
 		}
 
 
-    rapidxml::file<> xmlFile(argv[1]); // Default template is char
-    rapidxml::xml_document<> doc;
-    doc.parse<>(xmlFile.data()); //default parse flag?
+    //file<> xmlFile(argv[1]); // Default template is char
+    //xml_document<> doc;
+    //doc.parse<0>(xmlFile.data()); //default parse flag?
 
-	xml_node<> *node = doc.first_node(); //map node (root)
+	//xml_node<> *node = doc.first_node(); //map node (root)
 
 
 }

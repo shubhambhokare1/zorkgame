@@ -17,7 +17,7 @@ room::~room(){
 }
 
 //PARAMETRIC CONSTRUCTOR
-room::room(string name, string status, string type, string description, vector <string> border,
+/*room::room(string name, string status, string type, string description, vector <string> border,
            vector <container> container, vector <item > item, vector <creature> creature, vector <string> trigger) {
     this->name = name;
     this->status = status;
@@ -28,4 +28,4 @@ room::room(string name, string status, string type, string description, vector <
     this->item = item;
     this->creature = creature;
     this->trigger = trigger;
-}
+}*/

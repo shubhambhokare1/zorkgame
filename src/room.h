@@ -32,7 +32,7 @@ class room{
         //Commands applicable to room
         room();
         virtual ~room();
-        room(string name, string status, string type, string description, vector <string> border, vector <container> container, vector <item> item, vector <creature> creature, vector <string> trigger);
+        //room(string name, string status, string type, string description, vector <string> border, vector <container> container, vector <item> item, vector <creature> creature, vector <string> trigger);
 
 
 };
