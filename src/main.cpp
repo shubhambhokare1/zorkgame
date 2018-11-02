@@ -14,6 +14,7 @@
 #include "item.h"
 #include "container.h"
 #include "creature.h"
+#include "triggers.h"
 
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
@@ -45,12 +46,13 @@ int main(int argc, char * argv[]) {
 	map <string, item> items;
 	map <string, container> containers;
 	map <string, creature> creatures;
+	map <string, triggers> trigs;
 
 
 	//TRAVERSE THROUGH THE Node initializing the objects
 	xml_node<> *mapElement = node->first_node();
 	while (mapElement != NULL){
-		cout << mapElement->name() << endl;
+		//cout << mapElement->name() << endl;
 		string elementName = mapElement->name();
 
 		//Create the appropriate object
@@ -60,8 +62,20 @@ int main(int argc, char * argv[]) {
 			rooms.insert(make_pair(r.name, r));
 		}
 		//Item Object
+		if (elementName.compare("item") == 0){
+			item i(mapElement);
+			items.insert(make_pair(i.name, i));
+		}
 		//Container Object
+		if (elementName.compare("container") == 0){
+			container c(mapElement);
+			containers.insert(make_pair(c.name, c));
+		}
 		//Creature Object
+		if (elementName.compare("creature") == 0){
+			creature cr(mapElement);
+			creatures.insert(make_pair(cr.name, cr));
+		}
 
 		//Iterations
 		mapElement = mapElement->next_sibling();

@@ -16,6 +16,7 @@
 #include "item.h"
 #include "container.h"
 #include "creature.h"
+#include "triggers.h"
 
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
@@ -24,6 +25,13 @@
 
 using namespace std;
 using namespace rapidxml;
+
+//STRUCT FOR BORDER
+struct Border {
+    string name;
+    string direction;
+};
+
 
 class room{
 
@@ -34,11 +42,11 @@ class room{
         string status;
         string type;
         string description;
-        vector <string> border;
-        vector <string> container;
-        vector <string> item;
-        vector <string> creature;
-        vector <string> trigger;
+        vector <Border> borders;
+        vector <string> containers;
+        vector <string> items;
+        vector <string> creatures;
+        vector <triggers> trigger;
 
         //Commands applicable to root
         room();

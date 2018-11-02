@@ -10,35 +10,34 @@
 
 using namespace std;
 
-class Triggers 
+//STRUCTS FOR condition, status and owner
+struct Status {
+	//Status status;
+	string object;
+};
+
+struct Owner {
+	string object;
+	string has;
+	//Owner owner;
+};
+
+struct Condition {
+	Owner owner;
+	Status status;
+};
+
+
+
+class triggers
 {
-	
-	struct Condition {
-		Owner owner;
-		Status status;
-		
-	};
-	struct Status {
-		Status status;
-		string object;
-	};
-	
-	struct Owner {
-		string object;
-		string has;
-		Owner owner;
-	};
-public:
-	vector <Condition> Cond;
-	string command;
-	string type; //single or permanent --> where does this information come from? XML?
-	void print
 
+	public:
+		vector <Condition> Cond;
+		string command;
+		string type;
+		string print;
 
-
-
-}
-
-
+};
 
 #endif
