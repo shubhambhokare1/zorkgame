@@ -15,3 +15,5 @@ item::item(){
 item::~item(){
 
 }
+
+//PARAMETERIZED CONSTRUCTOR

@@ -8,10 +8,13 @@
 #include <string>
 #include <stdio.h>
 #include <vector>
+#include <map>
+
 #include "room.h"
 #include "item.h"
 #include "container.h"
 #include "creature.h"
+
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_print.hpp"
@@ -22,18 +25,52 @@ using namespace std;
 using namespace rapidxml;
 
 int main(int argc, char * argv[]) {
-	
-	if (argc != 1 ) { //error checking for innappropriate inputs or commands.  only xml file should be an input
+
+	//Error checking for inappropriate inputs or commands.
+	//Only xml file should be an input
+	if (argc != 2 ) {
 		cout << "Error! Enter: a.out filename.xml" << endl;
 		return 1;
+	}
+
+	//XML FILE PARSING that give an xml node
+	file<> xmlFile(argv[1]); 			 	//Default template is char
+    xml_document<> doc;						//XML doc parser
+    doc.parse<0>(xmlFile.data()); 		 	//Default parse flag
+	xml_node<> *node = doc.first_node(); 	//Map node (root)
+
+
+	//Creating hash maps for all the different type of objects
+	map <string, room> rooms;
+	map <string, item> items;
+	map <string, container> containers;
+	map <string, creature> creatures;
+
+
+	//TRAVERSE THROUGH THE Node initializing the objects
+	xml_node<> *mapElement = node->first_node();
+	while (mapElement != NULL){
+		cout << mapElement->name() << endl;
+		string elementName = mapElement->name();
+
+		//Create the appropriate object
+		//Room Object
+		if (elementName.compare("room") == 0){
+			room r(mapElement);
+			rooms.insert(make_pair(r.name, r));
 		}
+		//Item Object
+		//Container Object
+		//Creature Object
+
+		//Iterations
+		mapElement = mapElement->next_sibling();
+	}
 
 
-    //file<> xmlFile(argv[1]); // Default template is char
-    //xml_document<> doc;
-    //doc.parse<0>(xmlFile.data()); //default parse flag?
-
-	//xml_node<> *node = doc.first_node(); //map node (root)
-
+	//TESTING
+	/*node = node->first_node()->first_node();
+	node = node->next_sibling();
+	cout << node->name()<< endl;*/
 
 }
