@@ -43,7 +43,7 @@ container::container(xml_node<> * containerObj){
 			this->trigger.push_back(trig);
 		}
 		else if (elementName.compare("item") == 0) {
-			this->trigger.push_back(items);
+			this->item.push_back(elementValue);
 		}
 
 

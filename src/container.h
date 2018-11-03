@@ -35,7 +35,7 @@ public:
     string description;
     vector <string> accept;
     vector <string> item;
-    vector <string> trigger;
+    vector <triggers> trigger;
 
     //Functions applicable to the container
     container();
