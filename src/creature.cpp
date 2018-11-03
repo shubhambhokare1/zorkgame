@@ -62,9 +62,13 @@ creature::creature(xml_node<> * creatureObj){
 						}
 						if (condName.compare("object") == 0) {
 							attack.condition.owner.object = condVal;
+							attack.condition.status.object = condVal;
 						}
 						if (condName.compare("status") == 0) {
-							attack.condition.status.object = condVal;
+							attack.condition.status.status = condVal;
+						}
+						if (condName.compare("owner") == 0) {
+							attack.condition.owner.owner = condVal;
 						}
 						cond = cond->next_sibling();
 	

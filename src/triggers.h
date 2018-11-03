@@ -12,14 +12,14 @@ using namespace std;
 
 //STRUCTS FOR condition, status and owner
 struct Status {
-	//Status status;
+	string status;
 	string object;
 };
 
 struct Owner {
 	string object;
 	string has;
-	//Owner owner;
+	string owner;
 };
 
 struct Condition {
