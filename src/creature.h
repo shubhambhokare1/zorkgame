@@ -23,6 +23,12 @@
 using namespace std;
 using namespace rapidxml;
 
+
+struct Attack {
+	Condition condition;
+	string print;
+};
+
 class creature{
 
 public:
@@ -32,8 +38,8 @@ public:
     string status;
     string description;
     vector <string> vulnerability;
-    string attack;
-    vector <string> trigger;
+    Attack attack;
+    vector <triggers> trigger;
 
     //Functions performed by the creature
     creature();
