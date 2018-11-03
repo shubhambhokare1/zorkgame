@@ -43,7 +43,7 @@ class triggers
 		string type;
 		string command;
 		vector <string> print;
-		vector <string> actions;
+		vector <string> action;
 		vector <Condition> Cond;
 
 		//Functions related to the item

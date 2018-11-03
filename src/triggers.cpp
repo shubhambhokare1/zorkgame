@@ -19,72 +19,54 @@ triggers::~triggers(){
 
 //PARAMETRIZED CONSTRUCTOR
 triggers::triggers(xml_node<> * trigObj){
-    /*xml_node<> *creatureElement = creatureObj->first_node();
-    while (creatureElement != NULL){
+    xml_node<> *triggerElement = trigObj->first_node();
+    this->tr = false;
+    while (triggerElement != NULL){
         //cout << creatureElement->name() << endl;
-        string elementName = creatureElement->name();
-        string elementValue = creatureElement->value();
+        string elementName = triggerElement->name();
+        string elementValue = triggerElement->value();
 
 
         //INSTANTIATE VALUES IN OBJECT
-        if (elementName.compare("name") == 0) {
-            this->name = elementValue;
+        if (elementName.compare("type") == 0) {
+            this->type = elementValue;
         }
-        else if (elementName.compare("status") == 0) {
-            this->status = elementValue;
+        else if (elementName.compare("command") == 0) {
+            this->command = elementValue;
         }
-        else if (elementName.compare("vulnerability") == 0) {
-            this->vulnerability.push_back(elementValue);
+        else if (elementName.compare("print") == 0) {
+            this->print.push_back(elementValue);
         }
-        else if (elementName.compare("description") == 0) {
-            this->description = elementValue;
+        else if (elementName.compare("action") == 0) {
+            this->action.push_back(elementValue);
         }
-        else if (elementName.compare("attack") == 0) {
+        else if (elementName.compare("condition") == 0) {
+            Condition condition;
+            xml_node<> *cond = triggerElement->first_node();
+            string condName = cond->name();
+            string condVal = cond->value();
 
-            Attack attack;
-            //Creating turnOn object and initializing
-            xml_node<> *attackElement = creatureElement->first_node();
-            string attackName = attackElement->name();
-            string attackValue = attackElement->value();
-            while (attackElement != NULL) {
-                if (attackName.compare("print") == 0) {
-                    attack.print = attackValue;
+            while (cond != NULL) {
+                if (condName.compare("has") == 0) {
+                    condition.owner.has = condVal;
                 }
-                else if (attackName.compare("condition") == 0) {
-                    Condition condition;
-                    xml_node<> *cond = attackElement->first_node();
-                    string condName = cond->name();
-                    string condVal = cond->value();
-
-                    while (cond != NULL) {
-                        if (condName.compare("has") == 0) {
-                            attack.condition.owner.has = condVal;
-                        }
-                        if (condName.compare("object") == 0) {
-                            attack.condition.owner.object = condVal;
-                            attack.condition.status.object = condVal;
-                        }
-                        if (condName.compare("status") == 0) {
-                            attack.condition.status.status = condVal;
-                        }
-                        if (condName.compare("owner") == 0) {
-                            attack.condition.owner.owner = condVal;
-                        }
-                        cond = cond->next_sibling();
-
-                    }
-                    //this->attack = attack;
+                if (condName.compare("object") == 0) {
+                    condition.owner.object = condVal;
+                    condition.status.object = condVal;
                 }
-                attackElement = attackElement->next_sibling();
+                if (condName.compare("status") == 0) {
+                    condition.status.status = condVal;
+                }
+                if (condName.compare("owner") == 0) {
+                    condition.owner.owner = condVal;
+                }
+                cond = cond->next_sibling();
             }
-            this->attack = attack;
-        }
-        else if (elementName.compare("trigger") == 0) {
-            triggers trig;
-            this->trigger.push_back(trig);
+
+            this->Cond.push_back(condition);
         }
 
         //Iterations
-        creatureElement = creatureElement->next_sibling();
-    }*/
+        triggerElement = triggerElement->next_sibling();
+    }
 }
