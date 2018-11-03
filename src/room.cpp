@@ -66,7 +66,7 @@ room::room(xml_node<> * roomObj){
             this->creatures.push_back(elementValue);
         }
         else if (elementName.compare("trigger") == 0){
-            triggers trig;
+            triggers trig(roomElement);
             this->trigger.push_back(trig);
         }
 

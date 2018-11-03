@@ -39,7 +39,7 @@ container::container(xml_node<> * containerObj){
 			this->description = elementValue;
 		}
 		else if (elementName.compare("trigger") == 0) {
-			triggers trig;
+			triggers trig(containerElement);
 			this->trigger.push_back(trig);
 		}
 		else if (elementName.compare("item") == 0) {

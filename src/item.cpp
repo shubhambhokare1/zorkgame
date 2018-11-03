@@ -57,7 +57,7 @@ item::item(xml_node<> * itemObj){
             turn.push_back(turnOn);
         }
         else if (elementName.compare("trigger") == 0){
-            triggers trig;
+            triggers trig(itemElement);
             this->trigger.push_back(trig);
         }
 
