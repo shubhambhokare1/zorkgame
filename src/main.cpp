@@ -358,3 +358,5 @@ void ParseInput(vector<string>& store, const string& userIn)
 			break;
 		else
 			store.push_back(string());
+	}
+}
