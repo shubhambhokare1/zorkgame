@@ -30,6 +30,8 @@ vector <string> c_items;
 vector <string> c_containers;
 vector <triggers> c_triggers;
 vector <string> c_creatures;
+vector <string> c_inventory;
+
 
 
 int main(int argc, char * argv[]) {
@@ -151,91 +153,77 @@ void getNew(room *c_room, map <string, creature> creatures,map <string, item> it
 
 }
 
-int checkTiggersOverride(room *c_room, map <string, creature> creatures,map <string, item> items,map <string, container> containers){
+int triggerWithCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers){
 	int flag = 0;
 	for(int i=0; i < c_triggers.size(); i++){
 		triggers trig = c_triggers[i];
 		for(int i=0; i < trig.Cond.size(); i++){
 			if(!trig.command.empty()){
-
-				if(trig.Cond[i].owner.has.empty()){
-					string ob_name = trig.Cond[i].owner.object;
-					string ob_status = trig.Cond[i].status.status;
-					if(getItem(ob_name,items) != 0){
-						item * item = getItem(ob_name,items);
-						if(item->status.compare(ob_status) == 0){
-                    		flag = 1;
-						}
-                    //removed line here
-					}
-					else if(getContainer(ob_name,containers) != 0){
-						container * container = getContainer(ob_name,containers);
-						if(container->status.compare(ob_status) == 0){
-							flag = 1;
-						}
-					}
-					else if(getCreature(ob_name,creatures) != 0){
-						creature * creature = getCreature(ob_name,creatures);
-						if(creature->status.compare(ob_status) == 0){
-							flag = 1;
-						}
-					}
-					else if(getRoom(ob_name,rooms) != 0){
-						room * room = getRoom(ob_name,rooms);
-						if(room->status.compare(ob_status) == 0){
-							flag = 1;
-						}
-					}
-				}
-				else{
-					string own_name = trig.Cond[i].owner.owner;
-					string ob_name = trig.Cond[i].owner.object;
-					string yn = trig.Cond[i].owner.has;
-					if(own_name.compare("inventory") == 0){
-						if(std::find(Inventory.begin(), Inventory.end(), ob_name) != Inventory.end()){
-							if(yn.compare("yes") == 0){
+				if(!trig.Cond[i].owner.has.empty()){
+					if(trig.Cond[i].owner.owner.compare("inventory") == 0){
+						if(std::find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) != c_inventory.end()){
+							if(trig.Cond[i].owner.has.compare("yes") == 0){
 								flag = 1;
 							}
 					    }
-						else if(std::find(Inventory.begin(), Inventory.end(), ob_name) == Inventory.end()){
-							if(yn.compare("no") == 0){
+						else if(std::find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) == c_inventory.end()){
+							if(trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}				
 						}
 					}
 					else{
-						if(getItem(ob_name,items) != 0 && getContainer(own_name,containers) != 0){
-							item *item = getItem(ob_name,items);
-							container *container = getContainer(own_name,containers);
-							if(std::find(container->item.begin(), container->item.end(), ob_name) != container->item.end() && yn.compare("yes") == 0){
-								flag = true;
+						if(getItem(trig.Cond[i].owner.object,items) != 0 && getContainer(trig.Cond[i].owner.owner,containers) != 0){
+							item *item = getItem(trig.Cond[i].owner.object,items);
+							container *container = getContainer(trig.Cond[i].owner.owner,containers);
+							if(std::find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) != container->item.end() && trig.Cond[i].owner.has.compare("yes") == 0){
+								flag = 1;
 							}
-							else if(std::find(container->item.begin(), container->item.end(), ob_name) == container->item.end() && yn.compare("no") == 0){
+							else if(std::find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) == container->item.end() && trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}
 						}
-						else if(getItem(ob_name,items) != 0 && getRoom(own_name,rooms) != 0){
-							item *item = getItem(ob_name,items);
-							room *room = getRoom(own_name,rooms);
-							if(std::find(room->items.begin(), room->items.end(), ob_name) != room->items.end() && yn.compare("yes") == 0){
+						else if(getItem(trig.Cond[i].owner.object,items) != 0 && getRoom(trig.Cond[i].owner.owner,rooms) != 0){
+							item *item = getItem(trig.Cond[i].owner.object,items);
+							room *room = getRoom(trig.Cond[i].owner.owner,rooms);
+							if(std::find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) != room->items.end() && trig.Cond[i].owner.has.compare("yes") == 0){
 								flag = 1;
 							}
-							else if(std::find(room->items.begin(), room->items.end(), ob_name) == room->items.end() && yn.compare("no") == 0){
+							else if(std::find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) == room->items.end() && trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}
+						}
+					}
+				}
+				else{
+					if(getItem(trig.Cond[i].owner.object,items) != 0){
+						item * item = getItem(trig.Cond[i].owner.object,items);
+						if(item->status.compare(trig.Cond[i].status.status) == 0){
+                    		flag = 1;
+						}
+					}
+                    else if(getRoom(trig.Cond[i].owner.object,rooms) != 0){
+						room * room = getRoom(trig.Cond[i].owner.object,rooms);
+						if(room->status.compare(trig.Cond[i].status.status) == 0){
+							flag = 1;
+						}
+					}
+					else if(getContainer(trig.Cond[i].owner.object,containers) != 0){
+						container * container = getContainer(trig.Cond[i].owner.object,containers);
+						if(container->status.compare(trig.Cond[i].status.status) == 0){
+							flag = 1;
+						}
+					}
+					else if(getCreature(trig.Cond[i].owner.object,creatures) != 0){
+						creature * creature = getCreature(trig.Cond[i].owner.object,creatures);
+						if(creature->status.compare(trig.Cond[i].status.status) == 0){
+							flag = 1;
 						}
 					}
 				}
 			}
 		}
 	}
-	return Override;
+	return flag;
 
 }
-
-
-
-
-
-
-
