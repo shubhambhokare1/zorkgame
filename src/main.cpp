@@ -343,3 +343,25 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 	return flag;
 
 }
+
+
+void ParseInput(vector<string>& store, const string& userIn)
+{
+	string varStore;
+	stringstream iss(userIn);
+
+	iss >> noskipws;
+	
+	char delim;
+	while (true) {
+		if (iss >> varStore)
+			store.push_back(varStore);
+		else if (iss.eof())
+			break;
+		else
+			store.push_back(string());
+
+		iss.clear();
+		iss >> delim;
+	}
+}
