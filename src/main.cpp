@@ -293,7 +293,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									//hiddenCommands(trigger.action[i]); //Shubham see this
+									hiddenCommands(trigger.action[i]); //Shubham see this
 								}
 							}
 						}
@@ -755,3 +755,24 @@ void gameCommands(string input){
 
 
 }
+void ParseInput(vector<string>& store, const string& userIn)
+{
+	string varStore;
+	istringstream iss(userIn);
+
+	iss >> noskipws;
+
+	char delim;
+	while (true) {
+		if (iss >> varStore)
+			store.push_back(varStore);
+		else if (iss.eof())
+			break;
+		else
+			store.push_back(string());
+	}
+}
+
+
+
+
