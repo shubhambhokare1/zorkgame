@@ -110,7 +110,7 @@ int main(int argc, char * argv[]) {
 		cout<<">";
 		cin>>in;
 		for(int i = 0; i < c_room->borders.size();i++){
-			cout<<c_room->borders[i].name<<endl;
+			cout<<start_room->borders[i].name<<endl;
 		}
 		
 		traverseRoom(in,rooms);
@@ -500,5 +500,20 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 
 }
 
+void ParseInput(vector<string>& store, const string& userIn)
+{
+	string varStore;
+	istringstream iss(userIn);
 
+	iss >> noskipws;
 
+	char delim;
+	while (true) {
+		if (iss >> varStore)
+			store.push_back(varStore);
+		else if (iss.eof())
+			break;
+		else
+			store.push_back(string());
+	}
+}
