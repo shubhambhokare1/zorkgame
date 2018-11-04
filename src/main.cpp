@@ -41,6 +41,10 @@ int main(int argc, char * argv[]) {
         return 1;
     }
 
+
+	getline(cin, userIn); //stores the entered value in userIn
+	moveDir(userIn);// calls for direction
+
     //XML FILE PARSING that give an xml node
     file<> xmlFile(argv[1]); 			 	//Default template is char
     xml_document<> doc;						//XML doc parser
@@ -233,6 +237,68 @@ int checkTiggersOverride(room *c_room, map <string, creature> creatures,map <str
 
 }
 
+
+
+
+
+void ParseInput( string userinput ) {
+
+	if (userinput == "n" || userinput == "e" || userinput == "s" || userinput == "w") {
+		string currName = c_room->name;
+		string newName = c_room->name;
+	//	room* newRoom = c_room->borders;// -> how to access borders?
+		if (newRoom.size() != 0) {
+			for (unsigned int i = 0; i < newRoom.size(); i++) {
+				if (string(userinput) == string(newRoom[i]->direction)) {
+					newName = newRoom[i]->name;
+				}
+			}
+			/*
+			for (unsigned int j = 0; j < rooms.size(); j++) {
+				if (string(newName) == string(rooms[i]->name)) {
+					c_room = rooms[i];
+				}
+			}*/
+			if (currName == newName) {
+				cout << "Same room error, can't go there" << endl;
+			}
+			else {
+				cout << c_room->description << endl;
+			}
+		}
+	}
+	else if (userinput == "i") {
+		//inventory call
+	}
+	else if (userinput == "open exit" && c_room->type == "exit") {
+		//call the end function
+	}
+	else if (userinput.substr(0, 4) == "take") {
+		//call take function
+	}
+	else if (userinput.substr(0, 4) == "drop") {
+		//call drop function
+	}
+	else if (userinput.substr(0, 4) == "read") {
+		//call read function
+	}
+	else if (userinput.substr(0, 4) == "open") {
+		//call open container function
+	}
+	else if (userinput.substr(0, 3) == "put") {
+		putitem(userinput);
+	}
+	else if (userinput.substr(0, 7) == "turn on") {
+		// turn on (userinput);
+	}
+	else if (userinput.substr(0, 6) == "attack") {
+		//callattack
+	}
+	else {
+		cout << "Error." << endl;
+	}
+}
+}
 
 
 
