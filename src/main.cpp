@@ -28,7 +28,7 @@ using namespace rapidxml;
 
 vector <string> c_items;
 vector <string> c_containers;
-vector <string> c_triggers;
+vector <triggers> c_triggers;
 vector <string> c_creatures;
 
 
