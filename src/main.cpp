@@ -42,6 +42,10 @@ map <string, triggers> trigs;
 
 //FUNCTION DECLARATIONS
 void gameCommands(string input);
+void getNew(room *c_room, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
+void hiddenCommands(string command);
+int triggerWithCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
+int triggersWithoutCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
 
 
 int main(int argc, char * argv[]) {
@@ -300,7 +304,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									//hiddenCommands(trigger.action[i]);
+									hiddenCommands(trigger.action[i]);
 								}
 							}
 						}
@@ -315,7 +319,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									//hiddenCommands(trigger.action[i]);
+									hiddenCommands(trigger.action[i]);
 								}
 							}
 							else if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) == container->item.end() && trigger.Cond[i].owner.has.compare("no") == 0){
@@ -324,7 +328,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									//hiddenCommands(trigger.action[i]);
+									hiddenCommands(trigger.action[i]);
 								}
 							}
 					    }
