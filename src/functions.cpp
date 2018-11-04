@@ -46,6 +46,9 @@ creature* getCreature(string name,map <string, creature> creatures){
 	}
 }
 
+//GAME COMMANDS
+
+//ROOM TRAVERSAL - n,s,w,e
 void traverseRoom(string input,room *c_room,map <string, room> rooms)	{
 	
 	if(input.compare("n") == 0 || input.compare("s") == 0 || input.compare("w") == 0 || input.compare("e") == 0)	{	
@@ -105,8 +108,23 @@ void traverseRoom(string input,room *c_room,map <string, room> rooms)	{
 		}
 				
 	}
-	else{
-		//dealItems
-	}
-
 }
+
+
+//INVENTORY DISPLAY - i
+void displayInventory(vector <string> Inventory){
+    cout<<"Inventory: ";
+    if(Inventory.size() > 0){
+        for(int i=0; i < Inventory.size(); i++){
+            cout<<Inventory[i]<<",";
+        }
+        cout<<""<<endl;
+    }
+    else{
+        cout<<"empty"<<endl;
+    }
+}
+
+//Changes item ownership from room or container to inventory - take
+
+

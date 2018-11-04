@@ -36,5 +36,7 @@ creature* getCreature(string name,map <string, creature> creatures);
 
 void traverseRoom(string input,room *c_room,map <string, room> rooms);
 
+void displayInventory(vector <string> Inventory);
+
 
 #endif //ZORKGAME_FUNCTIONS_H
