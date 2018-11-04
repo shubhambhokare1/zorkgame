@@ -227,94 +227,6 @@ int triggerWithCommand(map <string, room> rooms, map <string, creature> creature
 
 }
 
-
-
-//HIDDEN COMMAND FUNCTIONS
-
-void behindScenesCommands(string command) {
-    if (command.find("Add") != string::npos) {
-        std::vector <string> words;
-        //SplitInput(commands, words);
-        if (words.size() == 4) {
-
-            if (getItem(words[1], items) != 0 && getContainer(words[3], containers) != 0) {
-                item *item = getItem(words[1], items);
-                container *container = getContainer(words[3], containers);
-                container->item.push_back(words[1]);
-            } else if (getItem(words[1], items) != 0 && getRoom(words[3], rooms) != 0) {
-                item *item = getItem(words[1], items);
-                room *room = getRoom(words[3], rooms);
-                room->items.push_back(words[1]);
-            } else if (getContainer(words[1], containers) != 0 && getContainer(words[3], containers) != 0) {
-                container *container = getContainer(words[1], containers);
-            } else if (getContainer(words[1], containers) != 0 && getRoom(words[3], rooms) != 0) {
-                container *container = getContainer(words[1], containers);
-                room *room = getRoom(words[3], rooms);
-                room->containers.push_back(words[1]);
-            } else if (getCreature(words[1], creatures) && getContainer(words[3], containers) != 0) {
-                item *item = getItem(words[1], items);
-                container *container = getContainer(words[3], containers);
-            } else if (getCreature(words[1], creatures) && getRoom(words[3], rooms) != 0) {
-                creature *creature = getCreature(words[1], creatures);
-                room *room = getRoom(words[3], rooms);
-                room->creatures.push_back(words[1]);
-            }
-
-        } else if (command.find("Delete") != string::npos) {
-            std::vector <string> words;
-            //SplitInput(command, words);
-            if (words.size() == 2) {
-                if (getItem(words[1], items) != 0) { ;
-                    std::map<string, item>::iterator it;
-                    it = items.find(words[1]);
-                    items.erase(it);
-                } else if (getContainer(words[1], containers) != 0) {
-                    std::map<string, container>::iterator it;
-                    it = containers.find(words[1]);
-                    containers.erase(it);
-                } else if (getRoom(words[1], rooms) != 0) {
-                    std::map<string, room>::iterator it;
-                    it = rooms.find(words[1]);
-                    rooms.erase(it);
-                } else if (getCreature(words[1], creatures) != 0) {
-                    std::map<string, creature>::iterator it;
-                    it = creatures.find(words[1]);
-                    creatures.erase(it);
-                }
-
-            }
-        } else if (command.find("Update") != string::npos) {
-            std::vector <string> words;
-            //SplitInput(command, words);
-            if (words.size() == 4) {
-                if (getItem(words[1], items) != 0) {
-                    item *item = getItem(words[1], items);
-                    item->status = words[3];
-                } else if (getContainer(words[1], containers) != 0) {
-                    container *container = getContainer(words[1], containers);
-                    container->status = words[3];
-                } else if (getCreature(words[1], creatures) != 0) {
-                    creature *creature = getCreature(words[1], creatures);
-                    creature->status = words[3];
-                } else if (getRoom(words[1], rooms) != 0) {
-                    room *room = getRoom(words[1], rooms);
-                    room->status = words[3];
-                }
-            }
-
-        } else if (command.compare("Game Over") == 0) {
-            cout << "Victory!" << endl;
-            //Exit = true;
-        } else {
-            //checkInput(command);
-        }
-    }
-}
-
-
-
-
-
 int triggersWithoutCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers){
 	int flag = 0;
 
@@ -430,3 +342,87 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 	return flag;
 
 }
+
+
+//HIDDEN COMMAND FUNCTIONS
+
+void behindScenesCommands(string command) {
+    if (command.find("Add") != string::npos) {
+        std::vector <string> words;
+        //SplitInput(commands, words);
+        if (words.size() == 4) {
+
+            if (getItem(words[1], items) != 0 && getContainer(words[3], containers) != 0) {
+                item *item = getItem(words[1], items);
+                container *container = getContainer(words[3], containers);
+                container->item.push_back(words[1]);
+            } else if (getItem(words[1], items) != 0 && getRoom(words[3], rooms) != 0) {
+                item *item = getItem(words[1], items);
+                room *room = getRoom(words[3], rooms);
+                room->items.push_back(words[1]);
+            } else if (getContainer(words[1], containers) != 0 && getContainer(words[3], containers) != 0) {
+                container *container = getContainer(words[1], containers);
+            } else if (getContainer(words[1], containers) != 0 && getRoom(words[3], rooms) != 0) {
+                container *container = getContainer(words[1], containers);
+                room *room = getRoom(words[3], rooms);
+                room->containers.push_back(words[1]);
+            } else if (getCreature(words[1], creatures) && getContainer(words[3], containers) != 0) {
+                item *item = getItem(words[1], items);
+                container *container = getContainer(words[3], containers);
+            } else if (getCreature(words[1], creatures) && getRoom(words[3], rooms) != 0) {
+                creature *creature = getCreature(words[1], creatures);
+                room *room = getRoom(words[3], rooms);
+                room->creatures.push_back(words[1]);
+            }
+
+        } else if (command.find("Delete") != string::npos) {
+            std::vector <string> words;
+            //SplitInput(command, words);
+            if (words.size() == 2) {
+                if (getItem(words[1], items) != 0) { ;
+                    std::map<string, item>::iterator it;
+                    it = items.find(words[1]);
+                    items.erase(it);
+                } else if (getContainer(words[1], containers) != 0) {
+                    std::map<string, container>::iterator it;
+                    it = containers.find(words[1]);
+                    containers.erase(it);
+                } else if (getRoom(words[1], rooms) != 0) {
+                    std::map<string, room>::iterator it;
+                    it = rooms.find(words[1]);
+                    rooms.erase(it);
+                } else if (getCreature(words[1], creatures) != 0) {
+                    std::map<string, creature>::iterator it;
+                    it = creatures.find(words[1]);
+                    creatures.erase(it);
+                }
+
+            }
+        } else if (command.find("Update") != string::npos) {
+            std::vector <string> words;
+            //SplitInput(command, words);
+            if (words.size() == 4) {
+                if (getItem(words[1], items) != 0) {
+                    item *item = getItem(words[1], items);
+                    item->status = words[3];
+                } else if (getContainer(words[1], containers) != 0) {
+                    container *container = getContainer(words[1], containers);
+                    container->status = words[3];
+                } else if (getCreature(words[1], creatures) != 0) {
+                    creature *creature = getCreature(words[1], creatures);
+                    creature->status = words[3];
+                } else if (getRoom(words[1], rooms) != 0) {
+                    room *room = getRoom(words[1], rooms);
+                    room->status = words[3];
+                }
+            }
+
+        } else if (command.compare("Game Over") == 0) {
+            cout << "Victory!" << endl;
+            //Exit = true;
+        } else {
+            //checkInput(command);
+        }
+    }
+}
+
