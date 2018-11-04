@@ -20,6 +20,7 @@ container::~container(){
 //PARAMETRIZED CONSTRUCTOR
 container::container(xml_node<> * containerObj){
     xml_node<> *containerElement = containerObj->first_node();
+	lock = 1;
     while (containerElement != NULL){
         //cout << containerElement->name() << endl;
         string elementName = containerElement->name();

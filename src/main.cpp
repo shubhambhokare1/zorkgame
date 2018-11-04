@@ -15,6 +15,7 @@
 #include "container.h"
 #include "creature.h"
 #include "triggers.h"
+#include "functions.h"
 
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
@@ -24,6 +25,12 @@
 
 using namespace std;
 using namespace rapidxml;
+
+vector <string> c_items;
+vector <string> c_containers;
+vector <string> c_triggers;
+vector <string> c_creatures;
+
 
 int main(int argc, char * argv[]) {
 
@@ -81,10 +88,65 @@ int main(int argc, char * argv[]) {
         mapElement = mapElement->next_sibling();
     }
 
+	
+	//Gameplay Init
+	room *c_room;
+	char in[20];
+
 
     //TESTING
-    /*node = node->first_node()->first_node();
-    node = node->next_sibling();
-    cout << node->name()<< endl;*/
+   	room *start_room = getRoom("Entrance",rooms);
+	cout<<start_room->description<<endl;
+	c_room = start_room;
+	
+	while(true)	{
+		cout<<">";
+		cin>>in;
+		
+
+
+	}
+
+}
+
+void getNew(room *c_room, map <string, creature> creatures,map <string, item> items,map <string, container> containers)	{
+
+	c_items.clear();
+	c_items.insert(c_items.end(), c_room->items.begin(), c_room->items.end());
+
+	c_containers.clear();
+	c_containers.insert(c_containers.end(), c_room->containers.begin(), c_room->containers.end());
+	for(int i=0; i < c_containers.size(); i++){
+		container* c_container = getContainer(c_containers[i],containers);
+		if(c_container->lock == 0){
+			c_items.insert(c_items.end(), c_container->item.begin(), c_container->item.end());
+		}
+	}
+
+	c_creatures.clear();
+	if(c_room->creatures.size()>0){
+		c_creatures.insert(c_creatures.end(), c_room->creatures.begin(), c_room->creatures.end());
+	}
+
+	c_triggers.clear();
+	c_triggers.insert(c_triggers.end(), c_room->trigger.begin(), c_room->trigger.end());
+	for(int i=0; i < c_items.size(); i++)	{
+		item * c_item = getItem(c_items[i],items);
+		c_triggers.insert(c_triggers.end(), c_item->trigger.begin(), c_item->trigger.end());
+	}
+
+	for(int i=0; i < c_containers.size(); i++){
+		container * c_container = getContainer(c_containers[i],containers);
+		c_triggers.insert(c_triggers.end(), c_container->trigger.begin(), c_container->trigger.end());
+	}
+	if(c_creatures.size()>0){
+		for(int i=0; i < c_creatures.size(); i++){
+			if(creatures.find(c_creatures[i]) != creatures.end()){
+				creature * c_creature = getCreature(c_creatures[i],creatures);
+				c_triggers.insert(c_triggers.end(), c_creature->trigger.begin(), c_creature->trigger.end());
+			}
+
+		}
+	}
 
 }

@@ -1,5 +1,6 @@
 COMP = g++
-SRC = src/main.cpp src/room.cpp src/item.cpp src/container.cpp src/creature.cpp src/triggers.cpp
+SRC = src/*.cpp
+
 
 all: zork
 

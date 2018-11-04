@@ -36,6 +36,7 @@ public:
     vector <string> accept;
     vector <string> item;
     vector <triggers> trigger;
+    int lock;
 
     //Functions applicable to the container
     container();
