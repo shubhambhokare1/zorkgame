@@ -444,7 +444,7 @@ void gameCommands(string input){
     else if(input.compare("i") == 0){
         displayInventory(c_inventory);
     }
-    else if(input.find("take") != npos){
+    /*else if(input.find("take") != npos){
 
         std::vector <string> words;
         //SplitInput(input, words);
@@ -467,7 +467,7 @@ void gameCommands(string input){
             cout<<"Please enter: take (item)"<<endl;
         }
     }
-    /*else if(input.find("drop") != string::npos){
+    else if(input.find("drop") != string::npos){
         std::vector <string> words;
         SplitInput(input, words);
         if(words.size() == 2){
