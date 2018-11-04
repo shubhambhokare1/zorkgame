@@ -348,7 +348,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 void ParseInput(vector<string>& store, const string& userIn)
 {
 	string varStore;
-	stringstream iss(userIn);
+	istringstream iss(userIn);
 
 	iss >> noskipws;
 	

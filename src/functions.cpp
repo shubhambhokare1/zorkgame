@@ -45,3 +45,4 @@ creature* getCreature(string name,map <string, creature> creatures){
 		return 0;
 	}
 }
+
