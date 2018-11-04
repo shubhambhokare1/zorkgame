@@ -104,7 +104,7 @@ int main(int argc, char * argv[]) {
 	while(true)	{
 		cout<<">";
 		cin>>in;
-		
+		traverseRoom(in,c_room,rooms);
 
 
 	}
