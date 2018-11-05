@@ -1,4 +1,4 @@
-i
+ii
 turn on shovel
 take shovel
 read shovel

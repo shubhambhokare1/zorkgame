@@ -27,6 +27,7 @@ using namespace rapidxml;
 struct Attack {
 	Condition condition;
 	string print;
+	vector <string> actions;
 };
 
 class creature{

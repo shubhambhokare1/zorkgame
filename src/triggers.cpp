@@ -35,7 +35,7 @@ triggers::triggers(xml_node<> * trigObj){
             this->command = elementValue;
         }
         else if (elementName.compare("print") == 0) {
-            this->print.push_back(elementValue);
+            this->print = elementValue;
         }
         else if (elementName.compare("action") == 0) {
             this->action.push_back(elementValue);

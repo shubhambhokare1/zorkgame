@@ -39,7 +39,7 @@ class item{
         string status;
         string description;
         string writing;
-        vector <turn_on> turn;
+        turn_on turn;
         vector <triggers> trigger;
 
         //Functions related to the item

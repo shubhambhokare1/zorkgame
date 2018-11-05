@@ -42,7 +42,7 @@ class triggers
 		bool tr;
 		string type;
 		string command;
-		vector <string> print;
+		string print;
 		vector <string> action;
 		vector <Condition> Cond;
 

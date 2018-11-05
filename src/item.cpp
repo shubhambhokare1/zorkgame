@@ -43,9 +43,9 @@ item::item(xml_node<> * itemObj){
             turn_on turnOn;
             //Creating turnOn object and initializing
             xml_node<> *turnOnElement = itemElement->first_node();
-            string turnOnName = turnOnElement->name();
-            string turnOnValue = turnOnElement->value();
             while (turnOnElement != NULL){
+                string turnOnName = turnOnElement->name();
+                string turnOnValue = turnOnElement->value();
                 if (turnOnName.compare("print") == 0){
                     turnOn.print = turnOnValue;
                 }
@@ -54,7 +54,7 @@ item::item(xml_node<> * itemObj){
                 }
                 turnOnElement = turnOnElement->next_sibling();
             }
-            turn.push_back(turnOn);
+            this->turn = turnOn;
         }
         else if (elementName.compare("trigger") == 0){
             triggers trig(itemElement);

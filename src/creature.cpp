@@ -44,9 +44,9 @@ creature::creature(xml_node<> * creatureObj){
             Attack attack;
             //Creating turnOn object and initializing
             xml_node<> *attackElement = creatureElement->first_node();
-            string attackName = attackElement->name();
-            string attackValue = attackElement->value();
             while (attackElement != NULL) {
+                string attackName = attackElement->name();
+                string attackValue = attackElement->value();
                 if (attackName.compare("print") == 0) {
                     attack.print = attackValue;
                 }
@@ -73,7 +73,10 @@ creature::creature(xml_node<> * creatureObj){
                         cond = cond->next_sibling();
 
                     }
-                    //this->attack = attack;
+
+                }
+                else if (attackName.compare("action") == 0) {
+                    attack.actions.push_back(attackValue);
                 }
                 attackElement = attackElement->next_sibling();
             }
