@@ -51,63 +51,61 @@ creature* getCreature(string name,map <string, creature> creatures){
 //ROOM TRAVERSAL - n,s,w,e
 void traverseRoom(string input,room *c_room,map <string, room> rooms)	{
 	
-	if(input.compare("n") == 0 || input.compare("s") == 0 || input.compare("w") == 0 || input.compare("e") == 0)	{	
-		int dflag = 0;
-		vector <Border> bord = c_room->borders;
-		if(input == "n"){
-			for(int i=0; i < bord.size(); i++){
-				if(bord[i].direction == "north"){
-					c_room = getRoom(bord[i].name,rooms);
-					dflag = 1;
-					cout<<c_room->description<<endl;
-				}
+	int dflag = 0;
+	vector <Border> bord = c_room->borders;
+	if(input == "n"){
+		for(int i=0; i < bord.size(); i++){
+			if(bord[i].direction == "north"){
+				c_room = getRoom(bord[i].name,rooms);
+				dflag = 1;
+				cout<<c_room->description<<endl;
 			}
-			if(dflag == 0){
-				cout<<"Can't go that way!"<<endl;
-			}
-			cout<<"Your current room is "<<c_room->name<<endl;
 		}
-		else if(input == "s"){
-			for(int i=0; i < bord.size(); i++){
-				if(bord[i].direction == "south"){
-					c_room = getRoom(bord[i].name,rooms);
-					dflag = 1;
-					cout<<c_room->description<<endl;
-				}
-			}
-			if(dflag == 0){
-				cout<<"Can't go that way!"<<endl;
-			}
-			cout<<"Your current room is "<<c_room->name<<endl;
+		if(dflag == 0){
+			cout<<"Can't go that way!"<<endl;
 		}
-		else if(input == "e"){
-			for(int i=0; i < bord.size(); i++){
-				if(bord[i].direction == "east"){
-					c_room = getRoom(bord[i].name,rooms);
-					dflag = 1;
-					cout<<c_room->description<<endl;
-				}
-			}
-			if(dflag == 0){
-				cout<<"Can't go that way!"<<endl;
-			}
-			cout<<"Your current room is "<<c_room->name<<endl;
-		}
-		else if(input == "w"){
-			for(int i=0; i < bord.size(); i++){
-				if(bord[i].direction == "west"){
-					c_room = getRoom(bord[i].name,rooms);
-					dflag = 1;
-					cout<<c_room->description<<endl;
-				}
-			}
-			if(dflag == 0){
-				cout<<"Can't go that way!"<<endl;
-			}
-			cout<<"Your current room is "<<c_room->name<<endl;
-		}
-				
+		cout<<"Your current room is "<<c_room->name<<endl;
 	}
+	else if(input == "s"){
+		for(int i=0; i < bord.size(); i++){
+			if(bord[i].direction == "south"){
+				c_room = getRoom(bord[i].name,rooms);
+				dflag = 1;
+				cout<<c_room->description<<endl;
+			}
+		}
+		if(dflag == 0){
+			cout<<"Can't go that way!"<<endl;
+		}
+		cout<<"Your current room is "<<c_room->name<<endl;
+	}
+	else if(input == "e"){
+		for(int i=0; i < bord.size(); i++){
+			if(bord[i].direction == "east"){
+				c_room = getRoom(bord[i].name,rooms);
+				dflag = 1;
+				cout<<c_room->description<<endl;
+			}
+		}
+		if(dflag == 0){
+			cout<<"Can't go that way!"<<endl;
+		}
+		cout<<"Your current room is "<<c_room->name<<endl;
+	}
+	else if(input == "w"){
+		for(int i=0; i < bord.size(); i++){
+			if(bord[i].direction == "west"){
+				c_room = getRoom(bord[i].name,rooms);
+				dflag = 1;
+				cout<<c_room->description<<endl;
+			}
+		}
+		if(dflag == 0){
+			cout<<"Can't go that way!"<<endl;
+		}
+		cout<<"Your current room is "<<c_room->name<<endl;
+	}
+				
 }
 
 

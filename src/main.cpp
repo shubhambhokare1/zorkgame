@@ -106,20 +106,16 @@ int main(int argc, char * argv[]) {
    	room *start_room = getRoom("Entrance",rooms);
 	cout<<start_room->description<<endl;
 	c_room = start_room;
+    /*for(int i = 0; i < c_room->borders.max_size();i++){
+        cout<<c_room->borders[i].direction<<endl;
+    }*/
+
 	
 	while(true)	{
 		cout<<">";
 		cin>>in;
-<<<<<<< HEAD
-		for(int i = 0; i < c_room->borders.size();i++){
-			cout<<start_room->borders[i].name<<endl;
-		}
-		
-		traverseRoom(in,rooms);
-=======
-		//traverseRoom(in,c_room,rooms);
-		gameCommands(in);
->>>>>>> 14e996df86925b715d70db0543eda786e61bfb6b
+		traverseRoom(in,c_room,rooms);
+		//gameCommands(in);
 
 
 	}
@@ -359,12 +355,10 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 
 }
 
-<<<<<<< HEAD
-=======
 
 //HIDDEN COMMAND FUNCTIONS
 
-void behindScenesCommands(string command) {
+void hiddenCommands(string command) {
     if (command.find("Add") != string::npos) {
         std::vector <string> words;
         //SplitInput(commands, words);
@@ -765,7 +759,6 @@ void gameCommands(string input){
 
 
 }
->>>>>>> 14e996df86925b715d70db0543eda786e61bfb6b
 void ParseInput(vector<string>& store, const string& userIn)
 {
 	string varStore;
@@ -783,10 +776,7 @@ void ParseInput(vector<string>& store, const string& userIn)
 			store.push_back(string());
 	}
 }
-<<<<<<< HEAD
-=======
 
 
 
 
->>>>>>> 14e996df86925b715d70db0543eda786e61bfb6b
