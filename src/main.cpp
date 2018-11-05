@@ -253,7 +253,6 @@ void openContainer(string input){
     words = ParseInput(input, " ");
     if(words.size() == 2){
         if(std::find(c_containers.begin(), c_containers.end(), words[1]) != c_containers.end()){
-            //cout<<"enter 1"<<endl;
             container * ct = getContainer(words[1]);
             if(ct -> item.size() == 0){
                 cout<<words[1]<<" is empty"<<endl;
@@ -359,11 +358,9 @@ void putItem(string input){
                     ct->item.push_back(words[1]);
                     removeFromInventory(words[1]);
                 }else{
-                    //bool can_accept = false;
                     for(int i=0; i < containers->accept.size(); i++){
                         if(containers->accept[i].compare(it->name) == 0){
                             cout<<"Item "<<words[1]<<" added to "<<words[3]<<endl;
-                            //Container* ct = getContainerFromMap(words[3]);
                             containers->item.push_back(words[1]);
                             removeFromInventory(words[1]);
                         }
@@ -431,13 +428,11 @@ void attackCreature(string input){
                 creature * creaturex = getCreature(words[1]);
                 item * itemx = getItem(words[3]);
                 string ob_status = creaturex->attack.condition.status.status;
-                //cout<<"item->status = "<<item->status<<endl;
                 if(std::find(creaturex->vulnerability.begin(), creaturex->vulnerability.end(), itemx->name) != creaturex->vulnerability.end()) {
                     if (creaturex->attack.condition.owner.object.empty()) {
-                        cout << "You assalt the " << creaturex->name << " with " << itemx->name << endl;
+                        cout << "You assault the " << creaturex->name << " with " << itemx->name << endl;
                         cout << creaturex->attack.print << endl;
                         for (int i = 0; i < creaturex->attack.actions.size(); i++) {
-                            //cout<< "  ee1"<<endl;
                             behindScenesCommands(creaturex->attack.actions[i]);
                         }
                     }
@@ -446,11 +441,9 @@ void attackCreature(string input){
                         if(getItem(ob_name) != 0){
                             item * item = getItem(ob_name);
                             if(item->status.compare(ob_status) == 0){
-                                cout<<"You assalt the "<<creaturex->name<<" with "<<item->name<<endl;
+                                cout<<"You assault the "<<creaturex->name<<" with "<<item->name<<endl;
                                 cout<<creaturex->attack.print<<endl;
-                                //cout<<"  &2"<<endl;
                                 for(int i=0; i < creaturex->attack.actions.size(); i++){
-                                    //cout<< "  ee1"<<endl;
                                     behindScenesCommands(creaturex->attack.actions[i]);
                                 }
                             }
@@ -461,10 +454,9 @@ void attackCreature(string input){
                         else if(getCreature(ob_name) != 0){
                             creature * creature = getCreature(ob_name);
                             if(creature->status.compare(ob_status) == 0){
-                                cout<<"You assalt the "<<creaturex->name<<" with "<<creature->name<<endl;
+                                cout<<"You assault the "<<creaturex->name<<" with "<<creature->name<<endl;
                                 cout<<creaturex->attack.print<<endl;
                                 for(int i=0; i < creaturex->attack.actions.size(); i++){
-                                    //cout<< "  ee1"<<endl;
                                     behindScenesCommands(creaturex->attack.actions[i]);
                                 }
                             }
@@ -478,7 +470,6 @@ void attackCreature(string input){
                                 cout<<"You assalt the "<<creaturex->name<<" with "<<creaturex->name<<endl;
                                 cout<<creaturex->attack.print<<endl;
                                 for(int i=0; i < creaturex->attack.actions.size(); i++){
-                                    //cout<< "  ee1"<<endl;
                                     behindScenesCommands(creaturex->attack.actions[i]);
                                 }
                             }
@@ -489,7 +480,7 @@ void attackCreature(string input){
                         else if(getRoom(ob_name) != 0){
                             room * room = getRoom(ob_name);
                             if(room->status.compare(ob_status) == 0){
-                                cout<<"You assalt the "<<creaturex->name<<" with "<<itemx->name<<endl;
+                                cout<<"You assault the "<<creaturex->name<<" with "<<itemx->name<<endl;
                                 cout<<creaturex->attack.print<<endl;
                                 for(int i=0; i < creaturex->attack.actions.size(); i++){
                                     behindScenesCommands(creaturex->attack.actions[i]);
@@ -522,6 +513,81 @@ void attackCreature(string input){
     }
 }
 
+//BEHIND THE SCENES GAME COMMANDS
+
+void addCommand(string command){
+    std::vector <string> words;
+    words = ParseInput(command, " ");
+    if (words.size() == 4) {
+        if (getItem(words[1]) != 0 && getContainer(words[3]) != 0) {
+            item *item = getItem(words[1]);
+            container *container = getContainer(words[3]);
+            container->item.push_back(words[1]);
+        } else if (getItem(words[1]) != 0 && getRoom(words[3]) != 0) {
+            item *item = getItem(words[1]);
+            room *room = getRoom(words[3]);
+            room->items.push_back(words[1]);
+        } else if (getContainer(words[1]) != 0 && getContainer(words[3]) != 0) {
+            container *container = getContainer(words[1]);
+        } else if (getContainer(words[1]) != 0 && getRoom(words[3]) != 0) {
+            container *container = getContainer(words[1]);
+            room *room = getRoom(words[3]);
+            room->containers.push_back(words[1]);
+        } else if (getCreature(words[1]) && getContainer(words[3]) != 0) {
+            item *item = getItem(words[1]);
+            container *container = getContainer(words[3]);
+        } else if (getCreature(words[1]) && getRoom(words[3]) != 0) {
+            creature *creature = getCreature(words[1]);
+            room *room = getRoom(words[3]);
+            room->creatures.push_back(words[1]);
+        }
+    }
+}
+
+void delCommand(string command){
+    std::vector <string> words;
+    words = ParseInput(command, " ");
+    if (words.size() == 2) {
+        if (getItem(words[1]) != 0) {
+            std::map<string, item>::iterator it;
+            it = items.find(words[1]);
+            items.erase(it);
+        } else if (getContainer(words[1]) != 0) {
+            std::map<string, container>::iterator it;
+            it = containers.find(words[1]);
+            containers.erase(it);
+        } else if (getRoom(words[1]) != 0) {
+            std::map<string, room>::iterator it;
+            it = rooms.find(words[1]);
+            rooms.erase(it);
+        } else if (getCreature(words[1]) != 0) {
+            std::map<string, creature>::iterator it;
+            it = creatures.find(words[1]);
+            creatures.erase(it);
+        }
+    }
+}
+
+void updateCommand(string command){
+    std::vector <string> words;
+    words = ParseInput(command, " ");
+    if (words.size() == 4) {
+        if (getItem(words[1]) != 0) {
+            item *item = getItem(words[1]);
+            item->status = words[3];
+        } else if (getContainer(words[1]) != 0) {
+            container *container = getContainer(words[1]);
+            container->status = words[3];
+        } else if (getCreature(words[1]) != 0) {
+            creature *creature = getCreature(words[1]);
+            creature->status = words[3];
+        }
+        else if (getRoom(words[1]) != 0) {
+            room *room = getRoom(words[1]);
+            room->status = words[3];
+        }
+    }
+}
 
 int main(int argc, char * argv[]) {
 
@@ -582,7 +648,6 @@ int main(int argc, char * argv[]) {
 	cout<<start_room->description<<endl;
     //cout<<start_room->containers.size()<<endl;
 	c_room = start_room;
-	getNew(c_room);
 
     /*for (std::map<string,room>::iterator it=rooms.begin(); it!=rooms.end(); ++it)
         std::cout << it->first << " => " << it->second.containers.size() << '\n';*/
@@ -686,11 +751,17 @@ int triggerWithCommand(){
 							if(trig.Cond[i].owner.has.compare("yes") == 0){
 								flag = 1;
 							}
+							else{
+							    flag = 0;
+							}
 					    }
 						else if(find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) == c_inventory.end()){
 							if(trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
-							}				
+							}
+							else{
+							    flag = 0;
+							}
 						}
 					}
 					else{
@@ -703,6 +774,9 @@ int triggerWithCommand(){
 							else if(find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) == container->item.end() && trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}
+                            else{
+                                flag = 0;
+                            }
 						}
 						else if(getItem(trig.Cond[i].owner.object) != 0 && getRoom(trig.Cond[i].owner.owner) != 0){
 							item *item = getItem(trig.Cond[i].owner.object);
@@ -713,6 +787,9 @@ int triggerWithCommand(){
 							else if(find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) == room->items.end() && trig.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}
+                            else{
+                                flag = 0;
+                            }
 						}
 					}
 				}
@@ -720,26 +797,38 @@ int triggerWithCommand(){
 					if(getItem(trig.Cond[i].owner.object) != 0){
 						item * item = getItem(trig.Cond[i].owner.object);
 						if(item->status.compare(trig.Cond[i].status.status) == 0){
-                    		flag = 1;
+						    flag = 1;
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
                     else if(getRoom(trig.Cond[i].owner.object) != 0){
 						room * room = getRoom(trig.Cond[i].owner.object);
 						if(room->status.compare(trig.Cond[i].status.status) == 0){
 							flag = 1;
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 					else if(getContainer(trig.Cond[i].owner.object) != 0){
 						container * container = getContainer(trig.Cond[i].owner.object);
 						if(container->status.compare(trig.Cond[i].status.status) == 0){
 							flag = 1;
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 					else if(getCreature(trig.Cond[i].owner.object) != 0){
 						creature * creature = getCreature(trig.Cond[i].owner.object);
 						if(creature->status.compare(trig.Cond[i].status.status) == 0){
 							flag = 1;
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 				}
 			}
@@ -753,7 +842,7 @@ int triggersWithoutCommand(){
 	int flag = 0;
 
 	for(int i=0; i < c_triggers.size(); i++){
-		triggers &trigger = c_triggers[i];
+		triggers trigger = c_triggers[i];
 		for(int i=0; i < trigger.Cond.size(); i++){
 			if(trigger.command.empty() && !trigger.tr){
 				if(trigger.Cond[i].owner.has.empty()){
@@ -761,13 +850,14 @@ int triggersWithoutCommand(){
 						item * item = getItem(trigger.Cond[i].owner.object);
 						if(item->status.compare(trigger.Cond[i].status.status) == 0){
 							flag = 1;
-                            for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print[i]<<endl;
-                            }
+                            cout<<trigger.print<<endl;
 							if(trigger.type.compare("single") == 0){
 								item->status = "go";
 							}
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
                     else if(getRoom(trigger.Cond[i].owner.object) != 0){
 						room * room = getRoom(trigger.Cond[i].owner.object);
@@ -777,6 +867,9 @@ int triggersWithoutCommand(){
 								room->status = "go";
 							}
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 					else if(getContainer(trigger.Cond[i].owner.object) != 0){
 						container * container = getContainer(trigger.Cond[i].owner.object);
@@ -786,6 +879,9 @@ int triggersWithoutCommand(){
 								container->status = "go";
 							}
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 					else if(getCreature(trigger.Cond[i].owner.object) != 0){
 						creature * creature = getCreature(trigger.Cond[i].owner.object);
@@ -795,6 +891,9 @@ int triggersWithoutCommand(){
 								creature->status = "go";
 							}
 						}
+                        else{
+                            flag = 0;
+                        }
 					}
 
 				}
@@ -803,24 +902,30 @@ int triggersWithoutCommand(){
 						if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) != c_inventory.end()){
 							if(trigger.Cond[i].owner.has.compare("yes") == 0){
 								flag = 1;
-								for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print[i]<<endl;
-                                }
+								//for(int i = 0; i < trigger.print.size(); i++) {
+                                cout<<trigger.print<<endl;
+                                //}
 								for(int i=0; i < trigger.action.size(); i++){
                                     behindScenesCommands(trigger.action[i]);
 								}
 							}
+                            else{
+                                flag = 0;
+                            }
 						}
 						else if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) == c_inventory.end()){
 							if(trigger.Cond[i].owner.has.compare("no") == 0){
 								flag = 0;
-								for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print[i]<<endl;
-                                }
+								//for(int i = 0; i < trigger.print.size(); i++) {
+                                cout<<trigger.print<<endl;
+                                //}
 								for(int i=0; i < trigger.action.size(); i++){
                                     behindScenesCommands(trigger.action[i]);
 								}
 							}
+                            else{
+                                flag = 1;
+                            }
 						}
 					}
 					else{
@@ -829,22 +934,25 @@ int triggersWithoutCommand(){
 							container *container = getContainer(trigger.Cond[i].owner.owner);
 							if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) != container->item.end() && trigger.Cond[i].owner.has.compare("yes") == 0){
 								flag = 1;
-								for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print[i]<<endl;
-                                }
+								//for(int i = 0; i < trigger.print.size(); i++) {
+                                cout<<trigger.print<<endl;
+                                //}
 								for(int i=0; i < trigger.action.size(); i++){
                                     behindScenesCommands(trigger.action[i]);
 								}
 							}
 							else if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) == container->item.end() && trigger.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
-								for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print[i]<<endl;
-                                }
+								//for(int i = 0; i < trigger.print.size(); i++) {
+                                cout<<trigger.print<<endl;
+                                //}
 								for(int i=0; i < trigger.action.size(); i++){
                                     behindScenesCommands(trigger.action[i]);
 								}
 							}
+                            else{
+                                flag = 0;
+                            }
 					    }
 						else if(getItem(trigger.Cond[i].owner.object) != 0 && getRoom(trigger.Cond[i].owner.owner) != 0){
 							item *item = getItem(trigger.Cond[i].owner.object);
@@ -855,6 +963,9 @@ int triggersWithoutCommand(){
 							else if(find(room->items.begin(), room->items.end(), trigger.Cond[i].owner.object) == room->items.end() && trigger.Cond[i].owner.has.compare("no") == 0){
 								flag = 1;
 							}
+                            else{
+                                flag = 0;
+                            }
 						}
 					}
 				}
@@ -870,78 +981,13 @@ int triggersWithoutCommand(){
 
 void behindScenesCommands(string command) {
     if (command.find("Add") != string::npos) {
-        std::vector <string> words;
-        words = ParseInput(command, " ");
-        if (words.size() == 4) {
-            if (getItem(words[1]) != 0 && getContainer(words[3]) != 0) {
-                item *item = getItem(words[1]);
-                container *container = getContainer(words[3]);
-                container->item.push_back(words[1]);
-            } else if (getItem(words[1]) != 0 && getRoom(words[3]) != 0) {
-                item *item = getItem(words[1]);
-                room *room = getRoom(words[3]);
-                room->items.push_back(words[1]);
-            } else if (getContainer(words[1]) != 0 && getContainer(words[3]) != 0) {
-                container *container = getContainer(words[1]);
-            } else if (getContainer(words[1]) != 0 && getRoom(words[3]) != 0) {
-                container *container = getContainer(words[1]);
-                room *room = getRoom(words[3]);
-                room->containers.push_back(words[1]);
-            } else if (getCreature(words[1]) && getContainer(words[3]) != 0) {
-                item *item = getItem(words[1]);
-                container *container = getContainer(words[3]);
-            } else if (getCreature(words[1]) && getRoom(words[3]) != 0) {
-                creature *creature = getCreature(words[1]);
-                room *room = getRoom(words[3]);
-                room->creatures.push_back(words[1]);
-            }
-
-        }
+        addCommand(command);
     }
     else if (command.find("Delete") != string::npos) {
-        std::vector <string> words;
-        words = ParseInput(command, " ");
-        if (words.size() == 2) {
-            if (getItem(words[1]) != 0) {
-                std::map<string, item>::iterator it;
-                it = items.find(words[1]);
-                items.erase(it);
-            } else if (getContainer(words[1]) != 0) {
-                std::map<string, container>::iterator it;
-                it = containers.find(words[1]);
-                containers.erase(it);
-            } else if (getRoom(words[1]) != 0) {
-                std::map<string, room>::iterator it;
-                it = rooms.find(words[1]);
-                rooms.erase(it);
-            } else if (getCreature(words[1]) != 0) {
-                std::map<string, creature>::iterator it;
-                it = creatures.find(words[1]);
-                creatures.erase(it);
-            }
-
-        }
+        delCommand(command);
     }
     else if (command.find("Update") != string::npos) {
-        std::vector <string> words;
-        words = ParseInput(command, " ");
-        if (words.size() == 4) {
-            if (getItem(words[1]) != 0) {
-                item *item = getItem(words[1]);
-                item->status = words[3];
-            } else if (getContainer(words[1]) != 0) {
-                container *container = getContainer(words[1]);
-                container->status = words[3];
-            } else if (getCreature(words[1]) != 0) {
-                creature *creature = getCreature(words[1]);
-                creature->status = words[3];
-            }
-            else if (getRoom(words[1]) != 0) {
-                    room *room = getRoom(words[1]);
-                    room->status = words[3];
-            }
-        }
-
+        updateCommand(command);
     }
     else if (command.compare("Game Over") == 0) {
         cout << "Victory!" << endl;

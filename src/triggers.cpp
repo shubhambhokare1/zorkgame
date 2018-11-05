@@ -43,10 +43,10 @@ triggers::triggers(xml_node<> * trigObj){
         else if (elementName.compare("condition") == 0) {
             Condition condition;
             xml_node<> *cond = triggerElement->first_node();
-            string condName = cond->name();
-            string condVal = cond->value();
-
             while (cond != NULL) {
+                string condName = cond->name();
+                string condVal = cond->value();
+
                 if (condName.compare("has") == 0) {
                     condition.owner.has = condVal;
                 }
