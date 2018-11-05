@@ -868,7 +868,6 @@ int triggersWithoutCommand(){
 
 //HIDDEN COMMAND FUNCTIONS
 
-
 void behindScenesCommands(string command) {
     if (command.find("Add") != string::npos) {
         std::vector <string> words;
