@@ -725,6 +725,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 
 //HIDDEN COMMAND FUNCTIONS
 
+
 void behindScenesCommands(string command) {
     if (command.find("Add") != string::npos) {
         std::vector <string> words;
