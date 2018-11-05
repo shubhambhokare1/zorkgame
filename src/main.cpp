@@ -26,6 +26,8 @@
 using namespace std;
 using namespace rapidxml;
 
+int endgame = 0;
+
 room *c_room;
 vector <string> c_items;
 vector <string> c_containers;
@@ -42,10 +44,369 @@ map <string, triggers> trigs;
 
 //FUNCTION DECLARATIONS
 void gameCommands(string input);
-void getNew(room *c_room, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
+void getNew(room *c_room);
 void hiddenCommands(string command);
 int triggerWithCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
 int triggersWithoutCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers);
+void ParseInput(vector<string>& store, const string& userIn);
+
+
+room* getRoom(string name) {
+    map <string, room>::iterator r;
+    r = rooms.find(name);
+    if(r != rooms.end()){
+        return &(r->second);
+    }
+    else{
+        return 0;
+    }
+}
+
+container* getContainer(string name){
+    map <string, container>::iterator c;
+    c = containers.find(name);
+    if(c != containers.end()){
+        return &(c->second);
+    }
+    else{
+        return 0;
+    }
+}
+
+item* getItem(string name){
+    map <string, item>::iterator i;
+    i = items.find(name);
+    if(i != items.end()){
+        return &(i->second);
+    }
+    else{
+        return 0;
+    }
+}
+
+creature* getCreature(string name){
+    map <string, creature>::iterator c;
+    c = creatures.find(name);
+    if(c != creatures.end()){
+        return &(c->second);
+    }
+    else{
+        return 0;
+    }
+}
+
+//UTILITY FUNCTIONS
+vector<string> ParseInput(string str, string delim)
+{
+    vector <string> result;
+    while(str.size()){
+        int index = str.find(delim);
+        if(index!=string::npos){
+            result.push_back(str.substr(0,index));
+            str = str.substr(index+delim.size());
+            if(str.size()==0)result.push_back(str);
+        }else{
+            result.push_back(str);
+            str = "";
+        }
+    }
+    return result;
+}
+
+
+void removeFromContainer(string item){
+    for(int i=0; i < c_containers.size(); i++){
+        container* ct = getContainer(c_containers[i]);
+        if(find(ct->item.begin(), ct->item.end(), item) != ct->item.end()){
+            std::vector<string>::iterator it;
+            for(it = ct->item.begin(); it!=ct->item.end();it++){
+                string it_name = *it;
+                if(it_name.compare(item) == 0){
+                    ct->item.erase(it);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//UTILITY FUNCTIONS
+void removeFromInventory(string item){
+    std::vector<string>::iterator it;
+    for(it = c_inventory.begin(); it!=c_inventory.end();it++){
+        string it_name = *it;
+        if(it_name.compare(item) == 0){
+            c_inventory.erase(it);
+            break;
+        }
+    }
+}
+
+
+//GAME COMMANDS
+
+//ROOM TRAVERSAL - n,s,w,e
+void traverseRoom(string input)	{
+
+    int dflag = 0;
+
+        vector <Border> bord = c_room->borders;
+        if(input == "n"){
+            for(int i=0; i < bord.size(); i++){
+                if(bord[i].direction == "north"){
+                    c_room = getRoom(bord[i].name);
+                    dflag = 1;
+                    cout<<c_room->description<<endl;
+                }
+            }
+            if(dflag == 0){
+                cout<<"Can't go that way!"<<endl;
+            }
+            cout<<"Your current room is "<<c_room->name<<endl;
+        }
+        else if(input == "s"){
+            for(int i=0; i < bord.size(); i++){
+                if(bord[i].direction == "south"){
+                    c_room = getRoom(bord[i].name);
+                    dflag = 1;
+                    cout<<c_room->description<<endl;
+                }
+            }
+            if(dflag == 0){
+                cout<<"Can't go that way!"<<endl;
+            }
+            cout<<"Your current room is "<<c_room->name<<endl;
+        }
+        else if(input == "e"){
+            for(int i=0; i < bord.size(); i++){
+                if(bord[i].direction == "east"){
+                    c_room = getRoom(bord[i].name);
+                    dflag = 1;
+                    cout<<c_room->description<<endl;
+                }
+            }
+            if(dflag == 0){
+                cout<<"Can't go that way!"<<endl;
+            }
+            cout<<"Your current room is "<<c_room->name<<endl;
+        }
+        else if(input == "w"){
+            for(int i=0; i < bord.size(); i++){
+                if(bord[i].direction == "west"){
+                    c_room = getRoom(bord[i].name);
+                    dflag = 1;
+                    cout<<c_room->description<<endl;
+                }
+            }
+            if(dflag == 0){
+                cout<<"Can't go that way!"<<endl;
+            }
+            cout<<"Your current room is "<<c_room->name<<endl;
+        }
+}
+
+
+//INVENTORY DISPLAY - i
+void displayInventory(){
+    cout<<"Inventory: ";
+    if(c_inventory.size() > 0){
+        for(int i=0; i < c_inventory.size(); i++){
+            cout<<c_inventory[i]<<",";
+        }
+        cout<<""<<endl;
+    }
+    else{
+        cout<<"empty"<<endl;
+    }
+}
+
+//Changes item ownership from room or container to inventory - take
+void takeItem(string input){
+    vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 2){
+        for(int i=0; i < c_items.size(); i++){
+            cout<<c_items[i]<<",";
+        }
+        if(find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
+            cout<<"This item have already been in the Inventory"<<endl;
+        }
+        else if(find(c_items.begin(), c_items.end(), words[1]) != c_items.end()){
+            c_inventory.push_back(words[1]);
+            cout<<"Item "<<words[1]<< " added to Inventory"<<endl;
+            removeFromContainer(words[1]);
+        }
+        else{
+            cout<<"Can't take "<<words[1]<<endl;
+        }
+    }
+    else{
+        cout<<"Take Error"<<endl;
+        cout<<"Please enter: take (item)"<<endl;
+    }
+}
+
+void openContainer(string input){
+    std::vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 2){
+        if(std::find(c_containers.begin(), c_containers.end(), words[1]) != c_containers.end()){
+            //cout<<"enter 1"<<endl;
+            container * ct = getContainer(words[1]);
+            if(ct -> item.size() == 0){
+                cout<<words[1]<<" is empty"<<endl;
+            }
+            else{
+                ct->lock = 0;
+                cout<<words[1]<<" contains: ";
+                for(int i=0; i < ct-> item.size(); i++){
+                    cout<<ct->item[i]<<" ";
+                }
+                cout<<" "<<endl;
+            }
+        }
+
+        else if(containers.find(words[1]) != containers.end()){
+            cout<<words[1]<<" is not in this room"<<endl;
+        }
+        else{
+            cout<<words[1]<<" is not a container"<<endl;
+        }
+
+    }
+    else{
+        cout<<"Open Error"<<endl;
+        cout<<"Please enter: open (item)"<<endl;
+    }
+}
+
+void openExit(string input){
+    if(c_room->type.compare("exit") == 0){
+        cout<<"Win!!!"<<endl;
+        endgame = 1;
+    }
+    else{
+        cout<<"Can't exit"<<endl;
+    }
+}
+
+void readItem(string input){
+    std::vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 2){
+        if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
+            item * item = getItem(words[1]);
+            if(item->writing.empty()){
+                cout<<"Noting written"<<endl;
+            }
+            else{
+                cout<<item->writing<<endl;
+            }
+        }
+        else{
+            cout<<"Please take it before read"<<endl;
+        }
+    }
+    else{
+        cout<<"Read Error"<<endl;
+        cout<<"Please enter: read (item)"<<endl;
+    }
+}
+
+void dropItem(string input){
+    std::vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 2){
+        if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
+            cout<<words[1]<<" dropped"<<endl;
+            removeFromInventory(words[1]);
+            room * room = getRoom(c_room->name);
+            room->items.push_back(words[1]);
+        }
+        else{
+            cout<<"No such item in Inventory"<<endl;
+        }
+    }
+    else{
+        cout<<"Drop Error"<<endl;
+        cout<<"Please enter: drop (item)"<<endl;
+    }
+}
+
+void putItem(string input){
+    std::vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 4){
+        if(words[2].compare("in") == 0){
+            item * it = getItem(words[1]);
+            if(it == 0){
+                cout<<"Item not exist"<<endl;
+            }
+            else if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) == c_inventory.end()){
+                cout<<"No such item in Inventory"<<endl;
+            }
+            else if(std::find(c_containers.begin(), c_containers.end(), words[3]) == c_containers.end()){
+                cout<<"No such container in this room"<<endl;
+            }
+            else{
+                container * containers = getContainer(words[3]);
+                if(containers->accept.size() == 0){
+
+                    cout<<"Item "<<words[1]<<" added to "<<words[3]<<endl;
+                    container * ct = getContainer(words[3]);
+                    ct->item.push_back(words[1]);
+                    removeFromInventory(words[1]);
+                }else{
+                    //bool can_accept = false;
+                    for(int i=0; i < containers->accept.size(); i++){
+                        if(containers->accept[i].compare(it->name) == 0){
+                            cout<<"Item "<<words[1]<<" added to "<<words[3]<<endl;
+                            //Container* ct = getContainerFromMap(words[3]);
+                            containers->item.push_back(words[1]);
+                            removeFromInventory(words[1]);
+                        }
+                        else{
+                            cout<<words[3]<<" doesn't accept "<<words[1]<<endl;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            cout<<"Put Error"<<endl;
+        }
+    }
+    else{
+        cout<<"Put Error"<<endl;
+        cout<<"Please enter: put (item) in (container)"<<endl;
+    }
+}
+
+void turnOnItem(string input){
+    std::vector <string> words;
+    words = ParseInput(input, " ");
+    if(words.size() == 3){
+        if(std::find(c_inventory.begin(), c_inventory.end(), words[2]) != c_inventory.end()){
+            item * item = getItem(words[2]);
+            cout<<"You activate the "<<words[2]<<endl;
+            if(!item->turn.print.empty()){
+                cout<<item->turn.print<<endl;
+            }
+            if(item->turn.actions.size()>0){
+                for(int i=0; i < item->turn.actions.size(); i++){
+                    behindScenesCommands(item->turn.actions[i]);
+                }
+            }
+        }
+        else{
+            cout<<"No such item in Inventory"<<endl;
+        }
+    }
+    else{
+        cout<<"Tuen on Error"<<endl;
+        cout<<"Please enter: turn on (item)"<<endl;
+    }
+}
 
 
 int main(int argc, char * argv[]) {
@@ -103,14 +464,24 @@ int main(int argc, char * argv[]) {
 
 
     //TESTING
-   	room *start_room = getRoom("Entrance",rooms);
+   	room *start_room = getRoom("Entrance");
 	cout<<start_room->description<<endl;
+    //cout<<start_room->containers.size()<<endl;
 	c_room = start_room;
-	
-	while(true)	{
+	getNew(c_room);
+
+    /*for (std::map<string,room>::iterator it=rooms.begin(); it!=rooms.end(); ++it)
+        std::cout << it->first << " => " << it->second.containers.size() << '\n';*/
+
+    while(!endgame)	{
 		cout<<">";
-		cin>>in;
+		cin.getline(in, 20);
+		getNew(c_room);
 		//traverseRoom(in,c_room,rooms);
+		/*cout<<c_room->borders.size()<<endl;
+		for(int i = 0; i < c_room->borders.size();i++){
+			cout<<c_room->borders[i].name+"i"<<endl;
+		}*/
 		gameCommands(in);
 
 
@@ -118,7 +489,7 @@ int main(int argc, char * argv[]) {
 
 }
 
-void getNew(room *c_room, map <string, creature> creatures,map <string, item> items,map <string, container> containers)	{
+void getNew(room *c_room)	{
 
 	c_items.clear();
 	c_items.insert(c_items.end(), c_room->items.begin(), c_room->items.end());
@@ -126,7 +497,7 @@ void getNew(room *c_room, map <string, creature> creatures,map <string, item> it
 	c_containers.clear();
 	c_containers.insert(c_containers.end(), c_room->containers.begin(), c_room->containers.end());
 	for(int i=0; i < c_containers.size(); i++){
-		container* c_container = getContainer(c_containers[i],containers);
+		container* c_container = getContainer(c_containers[i]);
 		if(c_container->lock == 0){
 			c_items.insert(c_items.end(), c_container->item.begin(), c_container->item.end());
 		}
@@ -140,18 +511,18 @@ void getNew(room *c_room, map <string, creature> creatures,map <string, item> it
 	c_triggers.clear();
 	c_triggers.insert(c_triggers.end(), c_room->trigger.begin(), c_room->trigger.end());
 	for(int i=0; i < c_items.size(); i++)	{
-		item * c_item = getItem(c_items[i],items);
+		item * c_item = getItem(c_items[i]);
 		c_triggers.insert(c_triggers.end(), c_item->trigger.begin(), c_item->trigger.end());
 	}
 
 	for(int i=0; i < c_containers.size(); i++){
-		container * c_container = getContainer(c_containers[i],containers);
+		container * c_container = getContainer(c_containers[i]);
 		c_triggers.insert(c_triggers.end(), c_container->trigger.begin(), c_container->trigger.end());
 	}
 	if(c_creatures.size()>0){
 		for(int i=0; i < c_creatures.size(); i++){
 			if(creatures.find(c_creatures[i]) != creatures.end()){
-				creature * c_creature = getCreature(c_creatures[i],creatures);
+				creature * c_creature = getCreature(c_creatures[i]);
 				c_triggers.insert(c_triggers.end(), c_creature->trigger.begin(), c_creature->trigger.end());
 			}
 
@@ -160,7 +531,7 @@ void getNew(room *c_room, map <string, creature> creatures,map <string, item> it
 
 }
 
-int triggerWithCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers){
+/*int triggerWithCommand(map <string, room> rooms, map <string, creature> creatures,map <string, item> items,map <string, container> containers){
 	int flag = 0;
 	for(int i=0; i < c_triggers.size(); i++){
 		triggers trig = c_triggers[i];
@@ -293,7 +664,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									hiddenCommands(trigger.action[i]); //Shubham see this
+									//hiddenCommands(trigger.action[i]); //Shubham see this
 								}
 							}
 						}
@@ -304,7 +675,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									hiddenCommands(trigger.action[i]);
+									//hiddenCommands(trigger.action[i]);
 								}
 							}
 						}
@@ -319,7 +690,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									hiddenCommands(trigger.action[i]);
+									//hiddenCommands(trigger.action[i]);
 								}
 							}
 							else if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) == container->item.end() && trigger.Cond[i].owner.has.compare("no") == 0){
@@ -328,7 +699,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
                                 cout<<trigger.print[i]<<endl;
                                 }
 								for(int i=0; i < trigger.action.size(); i++){
-									hiddenCommands(trigger.action[i]);
+									//hiddenCommands(trigger.action[i]);
 								}
 							}
 					    }
@@ -349,7 +720,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 	}
 	return flag;
 
-}
+}*/
 
 
 //HIDDEN COMMAND FUNCTIONS
@@ -357,7 +728,7 @@ int triggersWithoutCommand(map <string, room> rooms, map <string, creature> crea
 void behindScenesCommands(string command) {
     if (command.find("Add") != string::npos) {
         std::vector <string> words;
-        //SplitInput(commands, words);
+        ParseInput(words, command);
         if (words.size() == 4) {
             if (getItem(words[1], items) != 0 && getContainer(words[3], containers) != 0) {
                 item *item = getItem(words[1], items);
@@ -384,7 +755,7 @@ void behindScenesCommands(string command) {
 
         } else if (command.find("Delete") != string::npos) {
             std::vector <string> words;
-            //SplitInput(command, words);
+            ParseInput(words, command);
             if (words.size() == 2) {
                 if (getItem(words[1], items) != 0) { ;
                     std::map<string, item>::iterator it;
@@ -407,7 +778,7 @@ void behindScenesCommands(string command) {
             }
         } else if (command.find("Update") != string::npos) {
             std::vector <string> words;
-            //SplitInput(command, words);
+            ParseInput(words, command);
             if (words.size() == 4) {
                 if (getItem(words[1], items) != 0) {
                     item *item = getItem(words[1], items);
@@ -439,204 +810,33 @@ void behindScenesCommands(string command) {
 
 void gameCommands(string input){
     if(input.compare("n") == 0 || input.compare("s") == 0 || input.compare("w") == 0 || input.compare("e") == 0){
-        traverseRoom(input, c_room, rooms);
+        traverseRoom(input);
     }
     else if(input.compare("i") == 0){
-        displayInventory(c_inventory);
+        displayInventory();
     }
-    /*else if(input.find("take") != npos){
-
-        std::vector <string> words;
-        //SplitInput(input, words);
-        if(words.size() == 2){
-
-            if(find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
-                cout<<"This item have already been in the Inventory"<<endl;
-            }
-            else if(find(c_items.begin(), c_items.end(), words[1]) != c_items.end()){
-                c_inventory.push_back(words[1]);
-                cout<<"Item "<<words[1]<< " added to Inventory"<<endl;
-                removeItemFromContainer(words[1]);
-            }
-            else{
-                cout<<"Can't take "<<words[1]<<endl;
-            }
-        }
-        else{
-            cout<<"Take Error"<<endl;
-            cout<<"Please enter: take (item)"<<endl;
-        }
+    else if(input.find("take") != string::npos){
+        takeItem(input);
     }
     else if(input.find("drop") != string::npos){
-        std::vector <string> words;
-        SplitInput(input, words);
-        if(words.size() == 2){
-            if(std::find(Inventory.begin(), Inventory.end(), words[1]) != Inventory.end()){
-                cout<<words[1]<<" dropped"<<endl;
-                removeItemFromInventory(words[1]);
-                Room * room = getRoomFromMap(curRoom->name);
-                room->items.push_back(words[1]);
-            }
-            else{
-                cout<<"No such item in Inventory"<<endl;
-            }
-        }
-        else{
-            cout<<"Drop Error"<<endl;
-            cout<<"Please enter: drop (item)"<<endl;
-        }
+        dropItem(input);
     }
     else if(input.find("put") != string::npos){
-        std::vector <string> words;
-        SplitInput(input, words);
-        if(words.size() == 4){
-            if(words[2].compare("in") == 0){
-                Item * it = getItemFromMap(words[1]);
-                if(it == 0){
-                    cout<<"Item not exist"<<endl;
-                }
-                else if(std::find(Inventory.begin(), Inventory.end(), words[1]) == Inventory.end()){
-                    cout<<"No such item in Inventory"<<endl;
-                }
-                else if(std::find(cur_containers.begin(), cur_containers.end(), words[3]) == cur_containers.end()){
-                    cout<<"No such container in this room"<<endl;
-                }
-                else{
-                    Container * container = getContainerFromMap(words[3]);
-                    if(container->accepts.size() == 0){
-
-                        cout<<"Item "<<words[1]<<" added to "<<words[3]<<endl;
-                        Container* ct = getContainerFromMap(words[3]);
-                        ct->items.push_back(words[1]);
-                        removeItemFromInventory(words[1]);
-                    }else{
-                        //bool can_accept = false;
-                        for(int i=0; i < container->accepts.size(); i++){
-                            if(container->accepts[i].compare(it->name) == 0){
-                                cout<<"Item "<<words[1]<<" added to "<<words[3]<<endl;
-                                //Container* ct = getContainerFromMap(words[3]);
-                                container->items.push_back(words[1]);
-                                removeItemFromInventory(words[1]);
-                            }
-                            else{
-                                cout<<words[3]<<" doesn't accept "<<words[1]<<endl;
-                            }
-                        }
-                    }
-                }
-            }
-            else{
-                cout<<"Put Error"<<endl;
-            }
-        }
-        else{
-            cout<<"Put Error"<<endl;
-            cout<<"Please enter: put (item) in (container)"<<endl;
-        }
+        putItem(input);
+    }
+    else if(input.find("open exit") != string::npos){
+        openExit(input);
     }
     else if(input.find("open") != string::npos){
-        std::vector <string> words;
-        SplitInput(input, words);
-        if(words.size() == 2){
-            if(words[1].compare("exit") == 0){
-                if(curRoom->type.compare("exit") == 0){
-                    cout<<"Win!!!"<<endl;
-                    Exit = true;
-                }
-                else{
-                    cout<<"Can't exit"<<endl;
-                }
-            }
-            else if(std::find(cur_containers.begin(), cur_containers.end(), words[1]) != cur_containers.end()){
-                //cout<<"enter 1"<<endl;
-                Container * ct = getContainerFromMap(words[1]);
-                if(ct -> items.size() == 0){
-                    cout<<words[1]<<" is empty"<<endl;
-                }
-                else{
-                    ct->open = true;
-                    cout<<words[1]<<" contains: ";
-                    for(int i=0; i < ct-> items.size(); i++){
-                        cout<<ct->items[i]<<" ";
-                    }
-                    cout<<" "<<endl;
-                }
-            }
-
-            else if(all_containers.find(words[1]) != all_containers.end()){
-                cout<<words[1]<<" is not in this room"<<endl;
-            }
-            else{
-                cout<<words[1]<<" is not a container"<<endl;
-            }
-
-        }
-        else{
-            cout<<"Open Error"<<endl;
-            cout<<"Please enter: open (item)"<<endl;
-        }
+        openContainer(input);
     }
     else if(input.find("read") != string::npos){
-        std::vector <string> words;
-        SplitInput(input, words);
-        if(words.size() == 2){
-            if(std::find(Inventory.begin(), Inventory.end(), words[1]) != Inventory.end()){
-                Item * item = getItemFromMap(words[1]);
-                if(item->writing.empty()){
-                    cout<<"Noting written"<<endl;
-                }
-                else{
-                    cout<<item->writing<<endl;
-                }
-            }
-            else{
-                cout<<"Please take it before read"<<endl;
-            }
-        }
-        else{
-            cout<<"Read Error"<<endl;
-            cout<<"Please enter: read (item)"<<endl;
-        }
+        readItem(input);
     }
     else if(input.find("turn on") != string::npos){
-        std::vector <string> words;
-        SplitInput(input, words);
-        if(words.size() == 3){
-            if(std::find(Inventory.begin(), Inventory.end(), words[2]) != Inventory.end()){
-                Item * item = getItemFromMap(words[2]);
-                cout<<"You activate the "<<words[2]<<endl;
-                if(!item->turnon.print.empty()){
-                    cout<<item->turnon.print<<endl;
-                }
-                if(item->turnon.actions.size()>0){
-                    for(int i=0; i < item->turnon.actions.size(); i++){
-                        behindScenesCommands(item->turnon.actions[i]);
-                        //cout<<"2345"<<endl;
-                    }
-                }
-            }
-            else{
-                cout<<"No such item in Inventory"<<endl;
-            }
-        }
-        else{
-            cout<<"Tuen on Error"<<endl;
-            cout<<"Please enter: turn on (item)"<<endl;
-        }
+        turnOnItem(input);
     }
-    else if(input.compare("i") == 0){
-        cout<<"Inventory: ";
-        if(Inventory.size() > 0){
-            for(int i=0; i < Inventory.size(); i++){
-                cout<<Inventory[i]<<" ";
-            }
-            cout<<""<<endl;
-        }
-        else{
-            cout<<"empty"<<endl;
-        }
-    }
-    else if(input.find("attack") != string::npos){
+    /*else if(input.find("attack") != string::npos){
         std::vector <string> words;
         SplitInput(input, words);
         //cout<<"  &1"<<endl;
@@ -755,23 +955,9 @@ void gameCommands(string input){
 
 
 }
-void ParseInput(vector<string>& store, const string& userIn)
-{
-	string varStore;
-	istringstream iss(userIn);
 
-	iss >> noskipws;
 
-	char delim;
-	while (true) {
-		if (iss >> varStore)
-			store.push_back(varStore);
-		else if (iss.eof())
-			break;
-		else
-			store.push_back(string());
-	}
-}
+
 
 
 

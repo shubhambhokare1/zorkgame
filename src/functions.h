@@ -26,7 +26,8 @@ using namespace std;
 using namespace rapidxml;
 
 
-room* getRoom(string name, map <string, room> rooms);
+
+/*room* getRoom(string name, map <string, room> rooms);
 
 container* getContainer(string name,map <string, container> containers);
 
@@ -37,6 +38,12 @@ creature* getCreature(string name,map <string, creature> creatures);
 void traverseRoom(string input,room *c_room,map <string, room> rooms);
 
 void displayInventory(vector <string> Inventory);
+
+
+
+vector <string> removeFromInventory(string item, vector <string> Inventory);
+
+void removeFromContainer(string item, vector <string> c_containers, map <string, container> containers);*/
 
 
 #endif //ZORKGAME_FUNCTIONS_H

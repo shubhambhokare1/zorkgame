@@ -49,9 +49,8 @@ class room{
         vector <triggers> trigger;
 
         //Commands applicable to root
-        room();
         virtual ~room();
-        room(xml_node<> *);
+        room(xml_node<> * roomObj);
 
 };
 

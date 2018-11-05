@@ -1,17 +1,16 @@
 #include "functions.h"
 
 
-room* getRoom(string name, map <string, room> rooms) {
-	map <string, room>::iterator r;
-	r = rooms.find(name);
-	if(r != rooms.end()){
-		return &(r->second);
-	}
-	else{
-		return 0;
-	}
+/*room* getRoom(string name, map <string, room> rooms) {
+    map <string, room>::iterator r;
+    r = rooms.find(name);
+    if(r != rooms.end()){
+        return &(r->second);
+    }
+    else{
+        return 0;
+    }
 }
-
 
 container* getContainer(string name,map <string, container> containers){
 	map <string, container>::iterator c;
@@ -127,4 +126,33 @@ void displayInventory(vector <string> Inventory){
 
 //Changes item ownership from room or container to inventory - take
 
+
+//UTILITY FUNCTIONS
+vector <string> removeFromInventory(string item, vector <string> Inventory){
+    std::vector<string>::iterator it;
+    for(it = Inventory.begin(); it!=Inventory.end();it++){
+        string it_name = *it;
+        if(it_name.compare(item) == 0){
+            Inventory.erase(it);
+            break;
+        }
+    }
+    return Inventory;
+}
+
+void removeFromContainer(string item, vector <string> c_containers, map <string, container> containers){
+    for(int i=0; i < c_containers.size(); i++){
+        container* ct = getContainer(c_containers[i], containers);
+        if(find(ct->item.begin(), ct->item.end(), item) != ct->item.end()){
+            std::vector<string>::iterator it;
+            for(it = ct->item.begin(); it!=ct->item.end();it++){
+                string it_name = *it;
+                if(it_name.compare(item) == 0){
+                    ct->item.erase(it);
+                    break;
+                }
+            }
+        }
+    }
+}*/
 

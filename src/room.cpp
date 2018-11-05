@@ -9,16 +9,13 @@
 using namespace std;
 using namespace rapidxml;
 
-room::room(){
-
-}
 
 room::~room(){
 
 }
 
 //PARAMETRIC CONSTRUCTOR
-room::room(xml_node<> * roomObj){
+room::room(xml_node<> *roomObj) {
     xml_node<> *roomElement = roomObj->first_node();
     while (roomElement != NULL){
         //cout << roomElement->name() << endl;
@@ -39,13 +36,12 @@ room::room(xml_node<> * roomObj){
             this->description = elementValue;
         }
         else if (elementName.compare("border") == 0){
-
             Border border;
             //Creating border object and initializing
             xml_node<> *borderElement = roomElement->first_node();
-            string borderName = borderElement->name();
-            string borderValue = borderElement->value();
             while (borderElement != NULL){
+                string borderName = borderElement->name();
+                string borderValue = borderElement->value();
                 if (borderName.compare("name") == 0){
                     border.name = borderValue;
                 }
@@ -54,7 +50,7 @@ room::room(xml_node<> * roomObj){
                 }
                 borderElement = borderElement->next_sibling();
             }
-            borders.push_back(border);
+            this->borders.push_back(border);
         }
         else if (elementName.compare("container") == 0){
             this->containers.push_back(elementValue);
