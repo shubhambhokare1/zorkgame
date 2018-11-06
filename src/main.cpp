@@ -48,11 +48,10 @@ void getNew(room *c_room);
 void behindScenesCommands(string command);
 int TriggerFunc(int ind);
 void checkTrigger(string input);
-
-
 void ParseInput(vector<string>& store, const string& userIn);
 
 
+//FUNCTIONS TO TRAVERSE THROUGH MAP
 room* getRoom(string name) {
     map <string, room>::iterator r;
     r = rooms.find(name);
@@ -63,7 +62,6 @@ room* getRoom(string name) {
         return 0;
     }
 }
-
 container* getContainer(string name){
     map <string, container>::iterator c;
     c = containers.find(name);
@@ -74,7 +72,6 @@ container* getContainer(string name){
         return 0;
     }
 }
-
 item* getItem(string name){
     map <string, item>::iterator i;
     i = items.find(name);
@@ -85,7 +82,6 @@ item* getItem(string name){
         return 0;
     }
 }
-
 creature* getCreature(string name){
     map <string, creature>::iterator c;
     c = creatures.find(name);
@@ -115,7 +111,6 @@ vector<string> ParseInput(string str, string delim)
     return result;
 }
 
-
 void removeFromContainer(string item){
     for(int i=0; i < c_containers.size(); i++){
         container* ct = getContainer(c_containers[i]);
@@ -132,7 +127,6 @@ void removeFromContainer(string item){
     }
 }
 
-//UTILITY FUNCTIONS
 void removeFromInventory(string item){
     std::vector<string>::iterator it;
     for(it = c_inventory.begin(); it!=c_inventory.end();it++){
@@ -162,9 +156,9 @@ void traverseRoom(string input)	{
                 }
             }
             if(dflag == 0){
-                cout<<"Can't go that way!"<<endl;
+                cout<<"Invalid path!"<<endl;
             }
-            cout<<"Your current room is "<<c_room->name<<endl;
+            cout<<"You are currently in "<<c_room->name<<endl;
         }
         else if(input == "s"){
             for(int i=0; i < bord.size(); i++){
@@ -175,9 +169,9 @@ void traverseRoom(string input)	{
                 }
             }
             if(dflag == 0){
-                cout<<"Can't go that way!"<<endl;
+                cout<<"Invalid path!"<<endl;
             }
-            cout<<"Your current room is "<<c_room->name<<endl;
+            cout<<"You are currently in "<<c_room->name<<endl;
         }
         else if(input == "e"){
             for(int i=0; i < bord.size(); i++){
@@ -188,9 +182,9 @@ void traverseRoom(string input)	{
                 }
             }
             if(dflag == 0){
-                cout<<"Can't go that way!"<<endl;
+                cout<<"Invalid path!"<<endl;
             }
-            cout<<"Your current room is "<<c_room->name<<endl;
+            cout<<"You are currently in "<<c_room->name<<endl;
         }
         else if(input == "w"){
             for(int i=0; i < bord.size(); i++){
@@ -201,9 +195,9 @@ void traverseRoom(string input)	{
                 }
             }
             if(dflag == 0){
-                cout<<"Can't go that way!"<<endl;
+                cout<<"Invalid path!"<<endl;
             }
-            cout<<"Your current room is "<<c_room->name<<endl;
+            cout<<"You are currently in "<<c_room->name<<endl;
         }
 }
 
@@ -213,7 +207,7 @@ void displayInventory(){
     cout<<"Inventory: ";
     if(c_inventory.size() > 0){
         for(int i=0; i < c_inventory.size(); i++){
-            cout<<c_inventory[i]<<",";
+            cout<<c_inventory[i]<<" ";
         }
         cout<<""<<endl;
     }
@@ -227,15 +221,12 @@ void takeItem(string input){
     vector <string> words;
     words = ParseInput(input, " ");
     if(words.size() == 2){
-        for(int i=0; i < c_items.size(); i++){
-            cout<<c_items[i]<<",";
-        }
         if(find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
-            cout<<"This item have already been in the Inventory"<<endl;
+            cout<<"Item exists in inventory"<<endl;
         }
         else if(find(c_items.begin(), c_items.end(), words[1]) != c_items.end()){
             c_inventory.push_back(words[1]);
-            cout<<"Item "<<words[1]<< " added to Inventory"<<endl;
+            cout<<words[1]<<" added to inventory"<<endl;
             removeFromContainer(words[1]);
         }
         else{
@@ -243,8 +234,8 @@ void takeItem(string input){
         }
     }
     else{
-        cout<<"Take Error"<<endl;
-        cout<<"Please enter: take (item)"<<endl;
+        cout<<"Incorrect command used"<<endl;
+        cout<<"Enter: take (item)"<<endl;
     }
 }
 
@@ -268,7 +259,7 @@ void openContainer(string input){
         }
 
         else if(containers.find(words[1]) != containers.end()){
-            cout<<words[1]<<" is not in this room"<<endl;
+            cout<<words[1]<<" is not present in this room"<<endl;
         }
         else{
             cout<<words[1]<<" is not a container"<<endl;
@@ -276,18 +267,18 @@ void openContainer(string input){
 
     }
     else{
-        cout<<"Open Error"<<endl;
-        cout<<"Please enter: open (item)"<<endl;
+        cout<<"Incorrect command used"<<endl;
+        cout<<"Enter: open (item)"<<endl;
     }
 }
 
 void openExit(string input){
     if(c_room->type.compare("exit") == 0){
-        cout<<"Win!!!"<<endl;
+        cout<<"Game Over"<<endl;
         endgame = 1;
     }
     else{
-        cout<<"Can't exit"<<endl;
+        cout<<"Incorrect. Unable to exit. Try again"<<endl;
     }
 }
 
@@ -298,19 +289,19 @@ void readItem(string input){
         if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) != c_inventory.end()){
             item * item = getItem(words[1]);
             if(item->writing.empty()){
-                cout<<"Noting written"<<endl;
+                cout<<"Noting written on "<<item->name<<endl;
             }
             else{
                 cout<<item->writing<<endl;
             }
         }
         else{
-            cout<<"Please take it before read"<<endl;
+            cout<<"Take item in order to read it"<<endl;
         }
     }
     else{
-        cout<<"Read Error"<<endl;
-        cout<<"Please enter: read (item)"<<endl;
+        cout<<"Invalid command used"<<endl;
+        cout<<"Enter: read (item)"<<endl;
     }
 }
 
@@ -325,12 +316,12 @@ void dropItem(string input){
             room->items.push_back(words[1]);
         }
         else{
-            cout<<"No such item in Inventory"<<endl;
+            cout<<"No such item exists in inventory"<<endl;
         }
     }
     else{
-        cout<<"Drop Error"<<endl;
-        cout<<"Please enter: drop (item)"<<endl;
+        cout<<"Invalid command used"<<endl;
+        cout<<"Enter: drop (item)"<<endl;
     }
 }
 
@@ -343,11 +334,11 @@ void putItem(string input){
             if(it == 0){
                 cout<<"Item not exist"<<endl;
             }
-            else if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) == c_inventory.end()){
-                cout<<"No such item in Inventory"<<endl;
-            }
             else if(std::find(c_containers.begin(), c_containers.end(), words[3]) == c_containers.end()){
-                cout<<"No such container in this room"<<endl;
+                cout<<"Container not present in this room"<<endl;
+            }
+            else if(std::find(c_inventory.begin(), c_inventory.end(), words[1]) == c_inventory.end()){
+                cout<<"No such item in exists in inventory"<<endl;
             }
             else{
                 container * containers = getContainer(words[3]);
@@ -372,12 +363,12 @@ void putItem(string input){
             }
         }
         else{
-            cout<<"Put Error"<<endl;
+            cout<<"Invalid command used"<<endl;
         }
     }
     else{
-        cout<<"Put Error"<<endl;
-        cout<<"Please enter: put (item) in (container)"<<endl;
+        cout<<"Invalid command used"<<endl;
+        cout<<"Enter: put (item) in (container)"<<endl;
     }
 }
 
@@ -398,12 +389,12 @@ void turnOnItem(string input){
             }
         }
         else{
-            cout<<"No such item in Inventory"<<endl;
+            cout<<"No such item exists in inventory"<<endl;
         }
     }
     else{
-        cout<<"Turn on Error"<<endl;
-        cout<<"Please enter: turn on (item)"<<endl;
+        cout<<"Invalid game command"<<endl;
+        cout<<"Enter: turn on (item)"<<endl;
     }
 }
 
@@ -422,7 +413,7 @@ void attackCreature(string input){
                 cout<<"Item does not exist"<<endl;
             }
             else if(std::find(c_inventory.begin(), c_inventory.end(), words[3]) == c_inventory.end()){
-                cout<<"No such item in Inventory"<<endl;
+                cout<<"No such item exist in inventory"<<endl;
             }
             else{
                 creature * creaturex = getCreature(words[1]);
@@ -467,7 +458,7 @@ void attackCreature(string input){
                         else if(getContainer(ob_name) != 0){
                             container * container = getContainer(ob_name);
                             if(container->status.compare(ob_status) == 0){
-                                cout<<"You assalt the "<<creaturex->name<<" with "<<creaturex->name<<endl;
+                                cout<<"You assault the "<<creaturex->name<<" with "<<creaturex->name<<endl;
                                 cout<<creaturex->attack.print<<endl;
                                 for(int i=0; i < creaturex->attack.actions.size(); i++){
                                     behindScenesCommands(creaturex->attack.actions[i]);
@@ -503,12 +494,12 @@ void attackCreature(string input){
             }
         }
         else{
-            cout<<"Attack Error"<<endl;
-            cout<<"Please enter: attack (creature) with (item)"<<endl;
+            cout<<"Invalid game command"<<endl;
+            cout<<"Enter: attack (creature) with (item)"<<endl;
         }
     }
     else{
-        cout<<"Attack Error"<<endl;
+        cout<<"Invalid game command"<<endl;
         cout<<"Please enter: attack (creature) with (item)"<<endl;
     }
 }
@@ -527,15 +518,10 @@ void addCommand(string command){
             item *item = getItem(words[1]);
             room *room = getRoom(words[3]);
             room->items.push_back(words[1]);
-        } else if (getContainer(words[1]) != 0 && getContainer(words[3]) != 0) {
-            container *container = getContainer(words[1]);
         } else if (getContainer(words[1]) != 0 && getRoom(words[3]) != 0) {
             container *container = getContainer(words[1]);
             room *room = getRoom(words[3]);
             room->containers.push_back(words[1]);
-        } else if (getCreature(words[1]) && getContainer(words[3]) != 0) {
-            item *item = getItem(words[1]);
-            container *container = getContainer(words[3]);
         } else if (getCreature(words[1]) && getRoom(words[3]) != 0) {
             creature *creature = getCreature(words[1]);
             room *room = getRoom(words[3]);
@@ -575,12 +561,13 @@ void updateCommand(string command){
         if (getItem(words[1]) != 0) {
             item *item = getItem(words[1]);
             item->status = words[3];
-        } else if (getContainer(words[1]) != 0) {
-            container *container = getContainer(words[1]);
-            container->status = words[3];
-        } else if (getCreature(words[1]) != 0) {
+        }else if (getCreature(words[1]) != 0) {
             creature *creature = getCreature(words[1]);
             creature->status = words[3];
+        }
+        else if (getContainer(words[1]) != 0) {
+            container *container = getContainer(words[1]);
+            container->status = words[3];
         }
         else if (getRoom(words[1]) != 0) {
             room *room = getRoom(words[1]);
@@ -589,6 +576,8 @@ void updateCommand(string command){
     }
 }
 
+
+//GAME RUN THROUGH
 int main(int argc, char * argv[]) {
 
     //Error checking for inappropriate inputs or commands.
@@ -609,7 +598,6 @@ int main(int argc, char * argv[]) {
     //TRAVERSE THROUGH THE Node initializing the objects
     xml_node<> *mapElement = node->first_node();
     while (mapElement != NULL){
-        //cout << mapElement->name() << endl;
         string elementName = mapElement->name();
 
         //Create the appropriate object
@@ -638,29 +626,16 @@ int main(int argc, char * argv[]) {
         mapElement = mapElement->next_sibling();
     }
 
-	
-	//Gameplay Init
-	char in[100];
-
-
+    char in[100];
     //TESTING
    	room *start_room = getRoom("Entrance");
 	cout<<start_room->description<<endl;
-    //cout<<start_room->containers.size()<<endl;
 	c_room = start_room;
-
-    /*for (std::map<string,room>::iterator it=rooms.begin(); it!=rooms.end(); ++it)
-        std::cout << it->first << " => " << it->second.containers.size() << '\n';*/
 
     while(!endgame)	{
 		cout<<">";
 		cin.getline(in, 100);
 		getNew(c_room);
-		//traverseRoom(in,c_room,rooms);
-		/*cout<<c_room->borders.size()<<endl;
-		for(int i = 0; i < c_room->borders.size();i++){
-			cout<<c_room->borders[i].name+"i"<<endl;
-		}*/
         if(TriggerFunc(0) == 0){//has command
             gameCommands(in);
             TriggerFunc(1);
@@ -669,14 +644,11 @@ int main(int argc, char * argv[]) {
             checkTrigger(in);
             TriggerFunc(1);
         }
-
-
 	}
-
 }
 
-void getNew(room *c_room)	{
-
+void getNew(room *c_room)
+{
 	c_items.clear();
 	c_items.insert(c_items.end(), c_room->items.begin(), c_room->items.end());
 
@@ -714,9 +686,9 @@ void getNew(room *c_room)	{
 
 		}
 	}
-
 }
 
+//TRIGGER FUNCTIONS
 void checkTrigger(string input){
     for(int i=0; i < c_triggers.size(); i++){
         triggers trigger = c_triggers[i];
@@ -736,14 +708,10 @@ void checkTrigger(string input){
         }
 
     }
-
 }
 
 int TriggerFunc(int ind){
-	
     int flag = 0;
-
-
     if(ind == 0){
 	    for(int i=0; i < c_triggers.size(); i++){
 	    	triggers trig = c_triggers[i];
@@ -853,7 +821,7 @@ int TriggerFunc(int ind){
                                 cout<<trigger.print<<endl;
 							    if(trigger.type.compare("single") == 0){
 								    item->status = "go";
-							    }   
+							    }
 						    }
                             else{
                                 flag = 0;
@@ -965,12 +933,10 @@ int TriggerFunc(int ind){
 		    }
 	    }
     }
-    
+
     return flag;
 
 }
-
-
 
 //HIDDEN COMMAND FUNCTIONS
 
@@ -995,7 +961,6 @@ void behindScenesCommands(string command) {
 
 
 //GAME COMMAND FUNCTIONS
-
 
 void gameCommands(string input){
     if(input.compare("n") == 0 || input.compare("s") == 0 || input.compare("w") == 0 || input.compare("e") == 0){
@@ -1029,14 +994,6 @@ void gameCommands(string input){
         attackCreature(input);
     }
     else{
-        cout<<"Invalid instruction"<<endl;
+        cout<<"Invalid game command"<<endl;
     }
-
 }
-
-
-
-
-
-
-
