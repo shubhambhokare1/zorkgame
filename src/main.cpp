@@ -46,9 +46,9 @@ map <string, triggers> trigs;
 void gameCommands(string input);
 void getNew(room *c_room);
 void behindScenesCommands(string command);
-int triggerWithCommand();
+int TriggerFunc(int ind);
 void checkTrigger(string input);
-int triggersWithoutCommand();
+
 
 void ParseInput(vector<string>& store, const string& userIn);
 
@@ -661,13 +661,13 @@ int main(int argc, char * argv[]) {
 		for(int i = 0; i < c_room->borders.size();i++){
 			cout<<c_room->borders[i].name+"i"<<endl;
 		}*/
-        if(triggerWithCommand() == 0){//has command
+        if(TriggerFunc(0) == 0){//has command
             gameCommands(in);
-            triggersWithoutCommand();
+            TriggerFunc(1);
         }
         else{
             checkTrigger(in);
-            triggersWithoutCommand();
+            TriggerFunc(1);
         }
 
 
@@ -722,7 +722,7 @@ void checkTrigger(string input){
         triggers trigger = c_triggers[i];
         if(!trigger.command.empty()){//command exist
             if(trigger.command.compare(input) == 0){
-                if(triggersWithoutCommand() == 0){
+                if(TriggerFunc(1) == 0){
                     cout<<trigger.print<<endl;
                     for(int i=0; i < trigger.action.size(); i++){
                         behindScenesCommands(trigger.action[i]);
@@ -739,242 +739,237 @@ void checkTrigger(string input){
 
 }
 
-int triggerWithCommand(){
-	int flag = 0;
-	for(int i=0; i < c_triggers.size(); i++){
-		triggers trig = c_triggers[i];
-		for(int i=0; i < trig.Cond.size(); i++){
-			if(!trig.command.empty()){
-				if(!trig.Cond[i].owner.has.empty()){
-					if(trig.Cond[i].owner.owner.compare("inventory") == 0){
-						if(find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) != c_inventory.end()){
-							if(trig.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-							}
-							else{
-							    flag = 0;
-							}
+int TriggerFunc(int ind){
+	
+    int flag = 0;
+
+
+    if(ind == 0){
+	    for(int i=0; i < c_triggers.size(); i++){
+	    	triggers trig = c_triggers[i];
+	    	for(int i=0; i < trig.Cond.size(); i++){
+	    		if(!trig.command.empty()){
+	    			if(!trig.Cond[i].owner.has.empty()){
+	    				if(trig.Cond[i].owner.owner.compare("inventory") == 0){
+	    					if(find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) != c_inventory.end()){
+	    						if(trig.Cond[i].owner.has.compare("yes") == 0){
+	    							flag = 1;
+	    						}
+    							else{
+	    						    flag = 0;
+    							}
+    					    }
+		    				else if(find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) == c_inventory.end()){
+		    					if(trig.Cond[i].owner.has.compare("no") == 0){
+		    						flag = 1;
+		    					}
+		    					else{
+		    					    flag = 0;
+		    					}
+	    					}
+	    				}
+		    			else{
+		    				if(getItem(trig.Cond[i].owner.object) != 0 && getContainer(trig.Cond[i].owner.owner) != 0){
+		    					item *item = getItem(trig.Cond[i].owner.object);
+			    				container *container = getContainer(trig.Cond[i].owner.owner);
+		    					if(find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) != container->item.end() && trig.Cond[i].owner.has.compare("yes") == 0){
+		    						flag = 1;
+		    					}
+		    					else if(find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) == container->item.end() && trig.Cond[i].owner.has.compare("no") == 0){
+		    						flag = 1;
+		    					}
+                               else{
+                                   flag = 0;
+                               }
+		    				}
+		    				else if(getItem(trig.Cond[i].owner.object) != 0 && getRoom(trig.Cond[i].owner.owner) != 0){
+		    					item *item = getItem(trig.Cond[i].owner.object);
+		    					room *room = getRoom(trig.Cond[i].owner.owner);
+			    				if(find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) != room->items.end() && trig.Cond[i].owner.has.compare("yes") == 0){
+		    						flag = 1;
+		    					}
+                                else if(find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) == room->items.end() && trig.Cond[i].owner.has.compare("no") == 0){
+                                    flag = 1;
+			    				}
+                                else{
+                                    flag = 0;
+                                }
+					    	}
+				    	}
+			    	}
+			    	else{
+			    		if(getItem(trig.Cond[i].owner.object) != 0){
+			    			item * item = getItem(trig.Cond[i].owner.object);
+			    			if(item->status.compare(trig.Cond[i].status.status) == 0){
+			    			    flag = 1;
+			    			}
+                            else{
+                                flag = 0;
+                           }
+			    		}
+                       else if(getRoom(trig.Cond[i].owner.object) != 0){
+		    				room * room = getRoom(trig.Cond[i].owner.object);
+		    				if(room->status.compare(trig.Cond[i].status.status) == 0){
+		    					flag = 1;
+		    				}
+                            else{
+                            flag = 0;
+                            }
+			    		}
+			    		else if(getContainer(trig.Cond[i].owner.object) != 0){
+			    			container * container = getContainer(trig.Cond[i].owner.object);
+			    			if(container->status.compare(trig.Cond[i].status.status) == 0){
+			    				flag = 1;
+			    			}
+                            else{
+                                flag = 0;
+                            }
+			    		}
+			    		else if(getCreature(trig.Cond[i].owner.object) != 0){
+			    			creature * creature = getCreature(trig.Cond[i].owner.object);
+			    			if(creature->status.compare(trig.Cond[i].status.status) == 0){
+			    				flag = 1;
+			    			}
+                            else{
+                                flag = 0;
+                            }
 					    }
-						else if(find(c_inventory.begin(), c_inventory.end(), trig.Cond[i].owner.object) == c_inventory.end()){
-							if(trig.Cond[i].owner.has.compare("no") == 0){
-								flag = 1;
-							}
-							else{
-							    flag = 0;
-							}
-						}
-					}
-					else{
-						if(getItem(trig.Cond[i].owner.object) != 0 && getContainer(trig.Cond[i].owner.owner) != 0){
-							item *item = getItem(trig.Cond[i].owner.object);
-							container *container = getContainer(trig.Cond[i].owner.owner);
-							if(find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) != container->item.end() && trig.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-							}
-							else if(find(container->item.begin(), container->item.end(), trig.Cond[i].owner.object) == container->item.end() && trig.Cond[i].owner.has.compare("no") == 0){
-								flag = 1;
-							}
+				    }
+			    }
+		    }
+	    }
+    }
+    else {
+
+	    for(int i=0; i < c_triggers.size(); i++){
+		    triggers trigger = c_triggers[i];
+		    for(int i=0; i < trigger.Cond.size(); i++){
+			    if(trigger.command.empty() && !trigger.tr){
+				    if(trigger.Cond[i].owner.has.empty()){
+					    if(getItem(trigger.Cond[i].owner.object) != 0){
+						    item * item = getItem(trigger.Cond[i].owner.object);
+						    if(item->status.compare(trigger.Cond[i].status.status) == 0){
+							    flag = 1;
+                                cout<<trigger.print<<endl;
+							    if(trigger.type.compare("single") == 0){
+								    item->status = "go";
+							    }   
+						    }
                             else{
                                 flag = 0;
                             }
-						}
-						else if(getItem(trig.Cond[i].owner.object) != 0 && getRoom(trig.Cond[i].owner.owner) != 0){
-							item *item = getItem(trig.Cond[i].owner.object);
-							room *room = getRoom(trig.Cond[i].owner.owner);
-							if(find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) != room->items.end() && trig.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-							}
-							else if(find(room->items.begin(), room->items.end(), trig.Cond[i].owner.object) == room->items.end() && trig.Cond[i].owner.has.compare("no") == 0){
-								flag = 1;
-							}
+					    }
+                        else if(getRoom(trigger.Cond[i].owner.object) != 0){
+						    room * room = getRoom(trigger.Cond[i].owner.object);
+						    if(room->status.compare(trigger.Cond[i].status.status) == 0){
+							    flag = 1;
+							    if(trigger.type.compare("single") == 0){
+								    room->status = "go";
+							    }
+						    }
                             else{
                                 flag = 0;
                             }
-						}
-					}
-				}
-				else{
-					if(getItem(trig.Cond[i].owner.object) != 0){
-						item * item = getItem(trig.Cond[i].owner.object);
-						if(item->status.compare(trig.Cond[i].status.status) == 0){
-						    flag = 1;
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-                    else if(getRoom(trig.Cond[i].owner.object) != 0){
-						room * room = getRoom(trig.Cond[i].owner.object);
-						if(room->status.compare(trig.Cond[i].status.status) == 0){
-							flag = 1;
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-					else if(getContainer(trig.Cond[i].owner.object) != 0){
-						container * container = getContainer(trig.Cond[i].owner.object);
-						if(container->status.compare(trig.Cond[i].status.status) == 0){
-							flag = 1;
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-					else if(getCreature(trig.Cond[i].owner.object) != 0){
-						creature * creature = getCreature(trig.Cond[i].owner.object);
-						if(creature->status.compare(trig.Cond[i].status.status) == 0){
-							flag = 1;
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-				}
-			}
-		}
-	}
-	return flag;
-
-}
-
-int triggersWithoutCommand(){
-	int flag = 0;
-
-	for(int i=0; i < c_triggers.size(); i++){
-		triggers trigger = c_triggers[i];
-		for(int i=0; i < trigger.Cond.size(); i++){
-			if(trigger.command.empty() && !trigger.tr){
-				if(trigger.Cond[i].owner.has.empty()){
-					if(getItem(trigger.Cond[i].owner.object) != 0){
-						item * item = getItem(trigger.Cond[i].owner.object);
-						if(item->status.compare(trigger.Cond[i].status.status) == 0){
-							flag = 1;
-                            cout<<trigger.print<<endl;
-							if(trigger.type.compare("single") == 0){
-								item->status = "go";
-							}
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-                    else if(getRoom(trigger.Cond[i].owner.object) != 0){
-						room * room = getRoom(trigger.Cond[i].owner.object);
-						if(room->status.compare(trigger.Cond[i].status.status) == 0){
-							flag = 1;
-							if(trigger.type.compare("single") == 0){
-								room->status = "go";
-							}
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-					else if(getContainer(trigger.Cond[i].owner.object) != 0){
-						container * container = getContainer(trigger.Cond[i].owner.object);
-						if(container->status.compare(trigger.Cond[i].status.status) == 0){
-							flag = 1;
-						    if(trigger.type.compare("single") == 0){
+					    }
+					    else if(getContainer(trigger.Cond[i].owner.object) != 0){
+						    container * container = getContainer(trigger.Cond[i].owner.object);
+						    if(container->status.compare(trigger.Cond[i].status.status) == 0){
+							    flag = 1;
+						        if(trigger.type.compare("single") == 0){
 								container->status = "go";
-							}
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-					else if(getCreature(trigger.Cond[i].owner.object) != 0){
-						creature * creature = getCreature(trigger.Cond[i].owner.object);
-						if(creature->status.compare(trigger.Cond[i].status.status) == 0){
-							flag = 1;
-							if(trigger.type.compare("single") == 0){
-								creature->status = "go";
-							}
-						}
-                        else{
-                            flag = 0;
-                        }
-					}
-
-				}
-				else{
-					if(trigger.Cond[i].owner.owner.compare("inventory") == 0){
-						if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) != c_inventory.end()){
-							if(trigger.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-								//for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print<<endl;
-                                //}
-								for(int i=0; i < trigger.action.size(); i++){
-                                    behindScenesCommands(trigger.action[i]);
-								}
-							}
-                            else{
-                                flag = 0;
-                            }
-						}
-						else if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) == c_inventory.end()){
-							if(trigger.Cond[i].owner.has.compare("no") == 0){
-								flag = 0;
-								//for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print<<endl;
-                                //}
-								for(int i=0; i < trigger.action.size(); i++){
-                                    behindScenesCommands(trigger.action[i]);
-								}
-							}
-                            else{
-                                flag = 1;
-                            }
-						}
-					}
-					else{
-						if(getItem(trigger.Cond[i].owner.object) != 0 && getContainer(trigger.Cond[i].owner.owner) != 0){
-							item *item = getItem(trigger.Cond[i].owner.object);
-							container *container = getContainer(trigger.Cond[i].owner.owner);
-							if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) != container->item.end() && trigger.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-								//for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print<<endl;
-                                //}
-								for(int i=0; i < trigger.action.size(); i++){
-                                    behindScenesCommands(trigger.action[i]);
-								}
-							}
-							else if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) == container->item.end() && trigger.Cond[i].owner.has.compare("no") == 0){
-								flag = 1;
-								//for(int i = 0; i < trigger.print.size(); i++) {
-                                cout<<trigger.print<<endl;
-                                //}
-								for(int i=0; i < trigger.action.size(); i++){
-                                    behindScenesCommands(trigger.action[i]);
-								}
-							}
+							    }
+						    }
                             else{
                                 flag = 0;
                             }
 					    }
-						else if(getItem(trigger.Cond[i].owner.object) != 0 && getRoom(trigger.Cond[i].owner.owner) != 0){
-							item *item = getItem(trigger.Cond[i].owner.object);
-							room *room = getRoom(trigger.Cond[i].owner.owner);
-							if(find(room->items.begin(), room->items.end(), trigger.Cond[i].owner.object) != room->items.end() && trigger.Cond[i].owner.has.compare("yes") == 0){
-								flag = 1;
-							}
-							else if(find(room->items.begin(), room->items.end(), trigger.Cond[i].owner.object) == room->items.end() && trigger.Cond[i].owner.has.compare("no") == 0){
-								flag = 1;
-							}
+					    else if(getCreature(trigger.Cond[i].owner.object) != 0){
+						    creature * creature = getCreature(trigger.Cond[i].owner.object);
+						    if(creature->status.compare(trigger.Cond[i].status.status) == 0){
+							    flag = 1;
+							    if(trigger.type.compare("single") == 0){
+								    creature->status = "go";
+							    }
+						    }
                             else{
                                 flag = 0;
                             }
-						}
-					}
-				}
-			}
-		}
-	}
-	return flag;
+					    }
+
+				    }
+				    else{
+					    if(trigger.Cond[i].owner.owner.compare("inventory") == 0){
+						    if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) != c_inventory.end()){
+							    if(trigger.Cond[i].owner.has.compare("yes") == 0){
+								    flag = 1;
+                                cout<<trigger.print<<endl;
+								    for(int i=0; i < trigger.action.size(); i++){
+                                        behindScenesCommands(trigger.action[i]);
+								    }
+							    }
+                                else{
+                                    flag = 0;
+                                }
+						    }
+						    else if(find(c_inventory.begin(), c_inventory.end(), trigger.Cond[i].owner.object) == c_inventory.end()){
+							    if(trigger.Cond[i].owner.has.compare("no") == 0){
+								    flag = 0;
+                                    cout<<trigger.print<<endl;
+								    for(int i=0; i < trigger.action.size(); i++){
+                                        behindScenesCommands(trigger.action[i]);
+								    }
+							    }
+                                else{
+                                    flag = 1;
+                                }
+						    }
+					    }
+					    else{
+						    if(getItem(trigger.Cond[i].owner.object) != 0 && getContainer(trigger.Cond[i].owner.owner) != 0){
+							    item *item = getItem(trigger.Cond[i].owner.object);
+							    container *container = getContainer(trigger.Cond[i].owner.owner);
+							    if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) != container->item.end() && trigger.Cond[i].owner.has.compare("yes") == 0){
+								    flag = 1;
+                                    cout<<trigger.print<<endl;
+								    for(int i=0; i < trigger.action.size(); i++){
+                                        behindScenesCommands(trigger.action[i]);
+								    }
+							    }
+							    else if(find(container->item.begin(), container->item.end(), trigger.Cond[i].owner.object) == container->item.end() && trigger.Cond[i].owner.has.compare("no") == 0){
+								    flag = 1;
+                                    cout<<trigger.print<<endl;
+								    for(int i=0; i < trigger.action.size(); i++){
+                                        behindScenesCommands(trigger.action[i]);
+								    }
+							    }
+                                else{
+                                    flag = 0;
+                                }
+					        }
+						    else if(getItem(trigger.Cond[i].owner.object) != 0 && getRoom(trigger.Cond[i].owner.owner) != 0){
+							    item *item = getItem(trigger.Cond[i].owner.object);
+							    room *room = getRoom(trigger.Cond[i].owner.owner);
+							    if(find(room->items.begin(), room->items.end(), trigger.Cond[i].owner.object) != room->items.end() && trigger.Cond[i].owner.has.compare("yes") == 0){
+								    flag = 1;
+							    }
+							    else if(find(room->items.begin(), room->items.end(), trigger.Cond[i].owner.object) == room->items.end() && trigger.Cond[i].owner.has.compare("no") == 0){
+								    flag = 1;
+							    }
+                                else{
+                                    flag = 0;
+                                }
+						    }
+					    }
+				    }
+			    }
+		    }
+	    }
+    }
+    
+    return flag;
 
 }
+
 
 
 //HIDDEN COMMAND FUNCTIONS
